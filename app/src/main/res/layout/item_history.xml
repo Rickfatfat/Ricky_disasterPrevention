@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@color/background_black">
+
+    <ImageView
+        android:id="@+id/historyShakemap"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/shakemap_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/historyDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_white"
+        android:textSize="14sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/historyShakemap"
+        app:layout_constraintTop_toTopOf="@id/historyShakemap"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/historyEpicenter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_white"
+        android:textSize="14sp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="@id/historyDate"
+        app:layout_constraintTop_toBottomOf="@id/historyDate"
+        app:layout_constraintEnd_toEndOf="@id/historyDate"/>
+
+    <TextView
+        android:id="@+id/historyMagnitude"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/magnitude_red"
+        android:textSize="14sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="@id/historyEpicenter"
+        app:layout_constraintTop_toBottomOf="@id/historyEpicenter"
+        app:layout_constraintEnd_toEndOf="@id/historyEpicenter"/>
+
+    <TextView
+        android:id="@+id/historyIntensity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/intensity_blue"
+        android:textSize="14sp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="@id/historyMagnitude"
+        app:layout_constraintTop_toBottomOf="@id/historyMagnitude"
+        app:layout_constraintEnd_toEndOf="@id/historyMagnitude"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
