@@ -96,7 +96,7 @@ class MainFragment : BrowseSupportFragment() {
         for (quake in historyList) {
             val card = QuakeCard(
                 quake.epicenter,
-                "${quake.magnitude}級",
+                "${quake.magnitude}",
                 quake.shakemap_url ?: "https://你的API圖片網址.jpg"
             )
             listRowAdapter.add(card)
