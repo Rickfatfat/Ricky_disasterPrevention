@@ -4,41 +4,60 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
+    <!-- 標題 -->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+    <!-- 最新地震資訊文字 -->
 
-        <!-- 你原本的地震資訊區 -->
-        <TextView
-            android:id="@+id/tv_latest_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="最新地震"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+    <!-- 最新地震示意圖 -->
+
+    <!-- 歷史資料按鈕 -->
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="187dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="32dp"
+        android:text="最新地震"
+        android:textColor="#fae9fd"
+        android:textSize="32sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_latest_info"
+        android:layout_width="478dp"
+        android:layout_height="304dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="16dp"
+        android:text="等待資料..."
+        android:textColor="@color/tv_white"
+        android:textSize="28sp"
+        app:layout_constraintEnd_toStartOf="@id/iv_latest_image"
+        app:layout_constraintHorizontal_bias="0.375"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
 
-        <ImageView
-            android:id="@+id/iv_latest_image"
-            android:layout_width="235dp"
-            android:layout_height="200dp"
-            android:adjustViewBounds="true"
-            android:contentDescription="地震圖"
-            android:scaleType="centerCrop" />
+    <ImageView
+        android:id="@+id/iv_latest_image"
+        android:layout_width="386dp"
+        android:layout_height="423dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="44dp"
+        android:contentDescription="@string/latest_quake_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+    <!-- app:layout_constraintTop_toBottomOf="@id/tv_title" -->
 
-        <Button
-            android:id="@+id/btn_history"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="歷史地震" />
-
-        <!-- ⬇️ 這裡直接引入停水區塊 -->
-        <include
-            android:id="@+id/section_water_outage"
-            layout="@layout/include_water_outage" />
-
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+    <Button
+        android:id="@+id/btn_history"
+        android:layout_width="129dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="36dp"
+        android:background="#c4c3f9"
+        android:text="歷史資料"
+        android:textSize="28sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_latest_info" />
+</androidx.constraintlayout.widget.ConstraintLayout>

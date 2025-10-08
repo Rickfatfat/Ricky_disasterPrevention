@@ -29,7 +29,7 @@ class HistoryAdapter(private val historyList: List<Earthquake>) :
         val item = historyList[position]
         holder.tvDate.text = item.time
         holder.tvLocation.text = item.epicenter
-        holder.tvMagnitude.text = "${item.magnitude}級"
+        holder.tvMagnitude.text = "${item.magnitude}"
         holder.tvLevel.text = item.taichung_intensity
 
         Glide.with(holder.itemView.context)

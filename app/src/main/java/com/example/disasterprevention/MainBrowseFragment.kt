@@ -80,9 +80,8 @@ class MainBrowseFragment : Fragment() {
                     val latest = historyDataList.firstOrNull()
                     latest?.let {
                         tvLatestInfo.text =
-                            "${it.time} ${it.epicenter} 規模${it.magnitude} 當地${it.taichung_intensity}級"
-                        Glide.with(this@MainBrowseFragment)
-                            .load(it.shakemap_url)
+                            "時間：${it.time}\n地點：${it.epicenter}\n規模：${it.magnitude}\n本地：${it.taichung_intensity}"
+                        Glide.with(this@MainBrowseFragment).load(it.shakemap_url)
                             .into(ivLatestImage)
                     }
                 } else {
