@@ -7,6 +7,7 @@
     android:padding="8dp"
     android:background="@color/background_black">
 
+    <!-- 摇晃圖 -->
     <ImageView
         android:id="@+id/historyShakemap"
         android:layout_width="80dp"
@@ -16,6 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <!-- 日期 -->
     <TextView
         android:id="@+id/historyDate"
         android:layout_width="0dp"
@@ -29,6 +31,7 @@
         app:layout_constraintTop_toTopOf="@id/historyShakemap"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <!-- 震央 -->
     <TextView
         android:id="@+id/historyEpicenter"
         android:layout_width="0dp"
@@ -42,6 +45,7 @@
         app:layout_constraintTop_toBottomOf="@id/historyDate"
         app:layout_constraintEnd_toEndOf="@id/historyDate"/>
 
+    <!-- 規模 -->
     <TextView
         android:id="@+id/historyMagnitude"
         android:layout_width="0dp"
@@ -55,6 +59,7 @@
         app:layout_constraintTop_toBottomOf="@id/historyEpicenter"
         app:layout_constraintEnd_toEndOf="@id/historyEpicenter"/>
 
+    <!-- 當地震度 -->
     <TextView
         android:id="@+id/historyIntensity"
         android:layout_width="0dp"
@@ -67,5 +72,28 @@
         app:layout_constraintStart_toStartOf="@id/historyMagnitude"
         app:layout_constraintTop_toBottomOf="@id/historyMagnitude"
         app:layout_constraintEnd_toEndOf="@id/historyMagnitude"/>
+
+    <!-- 可展開詳細資訊區塊 -->
+    <LinearLayout
+        android:id="@+id/detailContainer"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/historyIntensity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- 詳細資料示範 -->
+        <TextView
+            android:id="@+id/historyDetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_white"
+            android:textSize="13sp"
+            android:text="詳細資料"
+            android:padding="4dp"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
