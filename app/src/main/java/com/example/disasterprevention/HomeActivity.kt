@@ -3,7 +3,6 @@ package com.example.disasterprevention
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,15 +20,10 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-
         recyclerView = findViewById(R.id.recycler_cards)
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         adapter = CardAdapter(cardItems)
         recyclerView.adapter = adapter
-
-        recyclerView.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(this, R.anim.layout_fade_in)
 
         addEarthquakeCard()
         addLandslideCard()
@@ -53,15 +47,17 @@ class HomeActivity : AppCompatActivity() {
                     backgroundColor = Color.parseColor("#faebd7"),
                     titleColor = Color.parseColor("#191970"),
                     subtitleColor = Color.parseColor("#191970"),
+                    iconResId = R.drawable.earthquake,
                     onClick = {
                         val intent = Intent(this@HomeActivity, MainActivity::class.java)
                         startActivity(intent)
                         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
                     }
                 )
-                cardItems.add(item)
-                adapter.notifyDataSetChanged()
-                recyclerView.scheduleLayoutAnimation()
+
+                cardItems.add(0, item)
+                adapter.notifyItemInserted(0)
+                recyclerView.scrollToPosition(0)
             }
 
             override fun onFailure(call: Call<EarthquakeResponse>, t: Throwable) {
@@ -71,15 +67,17 @@ class HomeActivity : AppCompatActivity() {
                     backgroundColor = Color.parseColor("#faebd7"),
                     titleColor = Color.parseColor("#191970"),
                     subtitleColor = Color.parseColor("#191970"),
-                    onClick = {
+                    iconResId = R.drawable.earthquake,
+                            onClick = {
                         val intent = Intent(this@HomeActivity, MainActivity::class.java)
                         startActivity(intent)
                         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
                     }
                 )
-                cardItems.add(item)
-                adapter.notifyDataSetChanged()
-                recyclerView.scheduleLayoutAnimation()
+
+                cardItems.add(0, item)
+                adapter.notifyItemInserted(0)
+                recyclerView.scrollToPosition(0)
             }
         })
     }
@@ -91,12 +89,13 @@ class HomeActivity : AppCompatActivity() {
             backgroundColor = Color.parseColor("#f5deb3"),
             titleColor = Color.parseColor("#4d1f00"),
             subtitleColor = Color.parseColor("#4d1f00"),
+            iconResId = R.drawable.landslide,
             onClick = {
                 // 先留空
             }
         )
+
         cardItems.add(item)
-        adapter.notifyDataSetChanged()
-        recyclerView.scheduleLayoutAnimation()
+        adapter.notifyItemInserted(cardItems.size - 1)
     }
 }

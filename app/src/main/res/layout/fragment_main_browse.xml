@@ -4,13 +4,6 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <!-- 標題 -->
-
-    <!-- 最新地震資訊文字 -->
-
-    <!-- 最新地震示意圖 -->
-
-    <!-- 歷史資料按鈕 -->
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="187dp"
@@ -23,41 +16,63 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tv_latest_info"
-        android:layout_width="478dp"
-        android:layout_height="304dp"
+    <!-- 🔹 新增一個可聚焦的容器 -->
+    <FrameLayout
+        android:id="@+id/container_latest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
-        android:layout_marginTop="16dp"
-        android:text="等待資料..."
-        android:textColor="@color/tv_white"
-        android:textSize="28sp"
-        app:layout_constraintEnd_toStartOf="@id/iv_latest_image"
-        app:layout_constraintHorizontal_bias="0.375"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title" />
-
-
-    <ImageView
-        android:id="@+id/iv_latest_image"
-        android:layout_width="386dp"
-        android:layout_height="423dp"
-        android:layout_marginTop="0dp"
         android:layout_marginEnd="44dp"
-        android:contentDescription="@string/latest_quake_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_title" />
-    <!-- app:layout_constraintTop_toBottomOf="@id/tv_title" -->
+        android:layout_marginTop="2dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:background="@drawable/focus_frame_background"
+        app:layout_constraintTop_toBottomOf="@id/tv_title">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/tv_latest_info"
+                android:layout_width="0dp"
+                android:layout_height="300dp"
+                android:layout_weight="1"
+                android:text="等待資料..."
+                android:textColor="@color/tv_white"
+                android:textSize="28sp"
+                android:layout_gravity="center_vertical"
+                android:padding="2dp" />
+
+            <ImageView
+                android:id="@+id/iv_latest_image"
+                android:layout_width="350dp"
+                android:layout_height="350dp"
+                android:layout_marginStart="20dp"
+                android:contentDescription="@string/latest_quake_image" />
+        </LinearLayout>
+    </FrameLayout>
 
     <Button
         android:id="@+id/btn_history"
         android:layout_width="129dp"
         android:layout_height="55dp"
         android:layout_marginStart="44dp"
-        android:layout_marginTop="36dp"
-        android:background="#c4c3f9"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/btn_history_background"
         android:text="歷史資料"
+        android:textColor="@color/btn_history_text_color"
         android:textSize="28sp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:clickable="true"
+        android:stateListAnimator="@animator/focus_scale"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_latest_info" />
+        app:layout_constraintTop_toBottomOf="@id/container_latest" />
+
+
+    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </androidx.constraintlayout.widget.ConstraintLayout>

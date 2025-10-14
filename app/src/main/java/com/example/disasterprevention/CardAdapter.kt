@@ -4,6 +4,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.ImageView
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -15,6 +16,8 @@ class CardAdapter(private val items: List<CardItem>) :
         val container: View = view.findViewById(R.id.card_inner)
         val title: TextView = view.findViewById(R.id.card_title)
         val subtitle: TextView = view.findViewById(R.id.card_subtitle)
+        val icon: ImageView = view.findViewById(R.id.card_icon)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
@@ -27,6 +30,11 @@ class CardAdapter(private val items: List<CardItem>) :
 
         holder.title.text = item.title
         holder.subtitle.text = item.subtitle
+
+        holder.icon.setImageResource(item.iconResId)
+
+        holder.title.setTextColor(item.titleColor)
+        holder.subtitle.setTextColor(item.subtitleColor)
 
         // 動態設定顏色
         val drawable = DrawableCompat.wrap(holder.container.background)

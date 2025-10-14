@@ -6,6 +6,7 @@ data class CardItem(
     val backgroundColor: Int,
     val titleColor: Int,
     val subtitleColor: Int,
+    val iconResId: Int,
     val onClick: (() -> Unit)? = null
 )
 
