@@ -7,93 +7,66 @@
     android:padding="8dp"
     android:background="@color/background_black">
 
-    <!-- 摇晃圖 -->
+    <!-- 🔹 左側地圖圖示 -->
     <ImageView
         android:id="@+id/historyShakemap"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:scaleType="centerCrop"
         android:contentDescription="@string/shakemap_image"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- 日期 -->
+    <!-- 🔹 日期 -->
     <TextView
         android:id="@+id/historyDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/text_white"
-        android:textSize="14sp"
+        android:textSize="20sp"
+        android:layout_marginStart="8dp"
         android:ellipsize="end"
         android:maxLines="1"
-        android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/historyShakemap"
+        app:layout_constraintEnd_toStartOf="@id/historyMagnitude"
         app:layout_constraintTop_toTopOf="@id/historyShakemap"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintHorizontal_weight="1"/>
 
-    <!-- 震央 -->
+    <!-- 🔹 規模 -->
+    <TextView
+        android:id="@+id/historyMagnitude"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:textColor="#FF5722"
+        android:textSize="20sp"
+        android:gravity="center"
+        app:layout_constraintEnd_toStartOf="@+id/historyIntensity"
+        app:layout_constraintTop_toTopOf="@id/historyDate" />
+
+    <!-- 🔹 震度 -->
+    <TextView
+        android:id="@+id/historyIntensity"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:textColor="#03A9F4"
+        android:textSize="20sp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/historyDate" />
+
+    <!-- 🔹 震央 -->
     <TextView
         android:id="@+id/historyEpicenter"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/text_white"
-        android:textSize="14sp"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toStartOf="@id/historyDate"
-        app:layout_constraintTop_toBottomOf="@id/historyDate"
-        app:layout_constraintEnd_toEndOf="@id/historyDate"/>
-
-    <!-- 規模 -->
-    <TextView
-        android:id="@+id/historyMagnitude"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/magnitude_red"
-        android:textSize="14sp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toStartOf="@id/historyEpicenter"
-        app:layout_constraintTop_toBottomOf="@id/historyEpicenter"
-        app:layout_constraintEnd_toEndOf="@id/historyEpicenter"/>
-
-    <!-- 當地震度 -->
-    <TextView
-        android:id="@+id/historyIntensity"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/intensity_blue"
-        android:textSize="14sp"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toStartOf="@id/historyMagnitude"
-        app:layout_constraintTop_toBottomOf="@id/historyMagnitude"
-        app:layout_constraintEnd_toEndOf="@id/historyMagnitude"/>
-
-    <!-- 可展開詳細資訊區塊 -->
-    <LinearLayout
-        android:id="@+id/detailContainer"
-        android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:textSize="20sp"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/historyIntensity"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- 詳細資料示範 -->
-        <TextView
-            android:id="@+id/historyDetail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/text_white"
-            android:textSize="13sp"
-            android:text="詳細資料"
-            android:padding="4dp"/>
-    </LinearLayout>
+        android:layout_marginStart="0dp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintStart_toStartOf="@id/historyDate"
+        app:layout_constraintEnd_toStartOf="@id/historyMagnitude"
+        app:layout_constraintTop_toBottomOf="@id/historyDate"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

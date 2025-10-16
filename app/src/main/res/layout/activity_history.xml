@@ -24,17 +24,19 @@
     app:layout_constraintEnd_toEndOf="parent"/>
 
 <!-- 歷史資料 RecyclerView -->
-<androidx.recyclerview.widget.RecyclerView
-    android:id="@+id/rv_history"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    android:clipToPadding="false"
-    android:layout_marginTop="16dp"
-    android:padding="16dp"
-    android:scrollbars="vertical"
-    app:layout_constraintTop_toBottomOf="@id/tv_history_title"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_history"
+        android:layout_width="861dp"
+        android:layout_height="432dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:padding="16dp"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_history_title"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 
