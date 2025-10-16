@@ -50,6 +50,9 @@
         <activity
             android:name=".BrowseErrorActivity"
             android:exported="false" />
+        <activity
+            android:name=".LatestDetailActivity"
+            android:exported="true" />
 
     </application>
 
