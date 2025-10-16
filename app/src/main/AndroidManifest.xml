@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.disasterprevention">
 
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature
@@ -48,6 +49,7 @@
         <activity
             android:name=".BrowseErrorActivity"
             android:exported="false" />
+
     </application>
 
 </manifest>

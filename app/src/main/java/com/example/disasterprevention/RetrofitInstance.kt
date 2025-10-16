@@ -1,4 +1,4 @@
-package com.example.disasterprevention
+/*package com.example.disasterprevention
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -16,3 +16,4 @@ object RetrofitInstance {
         retrofit.create(ApiService::class.java)
     }
 }
+*/

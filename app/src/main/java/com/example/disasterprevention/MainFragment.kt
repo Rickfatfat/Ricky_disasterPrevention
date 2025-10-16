@@ -41,6 +41,7 @@ class MainFragment : BrowseSupportFragment() {
         adapter = rowsAdapter
 
         fetchEarthquakeData()
+       // fetchWaterOutages()
         setupEventListeners()
     }
 
@@ -155,6 +156,59 @@ class MainFragment : BrowseSupportFragment() {
             mHandler.post { updateBackground(mBackgroundUri) }
         }
     }
+    // MainFragment.kt 內（class MainFragment : BrowseSupportFragment() { ... } 裡）
+
+
+
+    private fun fetchWaterOutages() {
+        RetrofitClient.instance.getWaterOutages(county = "台中市")
+            .enqueue(object : retrofit2.Callback<WaterOutagesResponse> {
+                override fun onResponse(
+                    call: retrofit2.Call<WaterOutagesResponse>,
+                    resp: retrofit2.Response<WaterOutagesResponse>
+                ) {
+                    val url = resp.raw().request.url.toString()
+                    android.util.Log.d("WATER", "URL=$url code=${resp.code()}")
+
+                    if (!resp.isSuccessful) {
+                        // 例如 404/500：通常是路由或後端錯誤
+                        return
+                    }
+                    val list = resp.body()?.data.orEmpty()
+                    if (list.isEmpty()) {
+                        // 沒資料就不加 row；你也可以放一張「目前無通報」卡片
+                        return
+                    }
+
+                    // 映射成你現有的卡片資料結構（沿用 QuakeCard）
+                    val rowAdapter = androidx.leanback.widget.ArrayObjectAdapter(cardPresenter)
+                    list.forEach { o ->
+                        rowAdapter.add(
+                            QuakeCard(
+                                title = "停水/降壓",
+                                content = "開始:${o.start_time ?: "-"}  結束:${o.end_time ?: "-"}\n區域:${o.water_outage_areas ?: "-"}",
+                                imageUrl = "" // 沒圖就空字串
+                            )
+                        )
+                    }
+
+                    rowsAdapter.add(
+                        androidx.leanback.widget.ListRow(
+                            androidx.leanback.widget.HeaderItem("停水/降壓"),
+                            rowAdapter
+                        )
+                    )
+                }
+
+                override fun onFailure(call: retrofit2.Call<WaterOutagesResponse>, t: Throwable) {
+                    android.util.Log.e("WATER", "failure: ${t.message}")
+                }
+            })
+    }
+
+
+
+
 
     companion object {
         private const val TAG = "MainFragment"
