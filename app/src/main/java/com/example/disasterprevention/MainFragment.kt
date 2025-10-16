@@ -21,6 +21,7 @@ import java.util.*
 
 class MainFragment : BrowseSupportFragment() {
 
+
     private val mHandler = Handler(Looper.getMainLooper())
     private lateinit var mBackgroundManager: BackgroundManager
     private var mDefaultBackground: Drawable? = null

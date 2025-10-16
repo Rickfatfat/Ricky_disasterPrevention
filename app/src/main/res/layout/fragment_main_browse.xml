@@ -72,6 +72,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/container_latest" />
 
+    <include
+        android:id="@+id/include_water_outage"
+        layout="@layout/include_water_outage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+
+
 
     <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

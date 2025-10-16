@@ -10,8 +10,6 @@ interface ApiService {
 
     @GET("api/v1/") // 替換為實際的 API 端點
     fun getWaterOutages(
-        @Query("county") county: String? = null ): Call<WaterOutagesResponse>
-
-
+        @Query("county") county: String?): Call<WaterOutagesResponse>
 
 }

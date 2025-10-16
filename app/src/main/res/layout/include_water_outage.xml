@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/water_section"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingTop="16dp"
-    android:paddingBottom="8dp">
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/tv_water_header"
-        android:layout_width="match_parent"
+        android:id="@+id/tv_water_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="停水 / 降壓（載入中…）"
+        android:text="停水 / 降壓"
         android:textStyle="bold"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:paddingBottom="8dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_water"
+        android:id="@+id/recycler_water"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:nestedScrollingEnabled="false" />
+        android:nestedScrollingEnabled="false"/>
 </LinearLayout>
