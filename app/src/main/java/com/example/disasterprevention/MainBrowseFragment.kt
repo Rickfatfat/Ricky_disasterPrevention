@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import com.example.disasterprevention.WaterOutagesResponse
+
 
 class MainBrowseFragment : Fragment() {
 
@@ -118,7 +118,7 @@ class MainBrowseFragment : Fragment() {
                     call: Call<WaterOutagesResponse>,
                     response: Response<WaterOutagesResponse>
                 ) {
-                    val items: List<WaterOutage> = response.body()?.items ?: emptyList()
+                    val items: List<WaterOutage> = response.body()?.data ?: emptyList()
                     for (w in items) {
                         val key = "${w.start_time}|${w.end_time}|${w.water_outage_areas}"
                         if (seen.add(key)) buffer.add(w)

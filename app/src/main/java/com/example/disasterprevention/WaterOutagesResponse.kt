@@ -2,6 +2,6 @@
 package com.example.disasterprevention
 /*data class WaterOutagesResponse(val data: List<WaterOutage>)*/
 data class WaterOutagesResponse(
-    val items: List<WaterOutage>
+    val data: List<WaterOutage>
 )
 

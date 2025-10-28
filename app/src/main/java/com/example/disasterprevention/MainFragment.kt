@@ -18,6 +18,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import androidx.leanback.widget.HeaderItem
+import androidx.leanback.widget.ListRow
 
 class MainFragment : BrowseSupportFragment() {
 
@@ -42,7 +44,7 @@ class MainFragment : BrowseSupportFragment() {
         adapter = rowsAdapter
 
         fetchEarthquakeData()
-       // fetchWaterOutages()
+        fetchWaterOutages()
         setupEventListeners()
     }
 
@@ -108,6 +110,7 @@ class MainFragment : BrowseSupportFragment() {
         rowsAdapter.add(ListRow(header, listRowAdapter))
     }
 
+
     private fun setupEventListeners() {
         onItemViewClickedListener = OnItemViewClickedListener { _, item, _, _ ->
             if (item is QuakeCard) {
@@ -162,53 +165,42 @@ class MainFragment : BrowseSupportFragment() {
 
 
     private fun fetchWaterOutages() {
-        RetrofitClient.instance.getWaterOutages(county = "台中市")
-            .enqueue(object : retrofit2.Callback<WaterOutagesResponse> {
+        // 你目前使用的單例已是 RetrofitClient
+        RetrofitClient.instance
+            .getWaterOutages(county = "台中市")
+            .enqueue(object : Callback<WaterOutagesResponse> {
                 override fun onResponse(
-                    call: retrofit2.Call<WaterOutagesResponse>,
-                    resp: retrofit2.Response<WaterOutagesResponse>
+                    call: Call<WaterOutagesResponse>,
+                    resp: Response<WaterOutagesResponse>
                 ) {
-                    val url = resp.raw().request.url.toString()
-                    android.util.Log.d("WATER", "URL=$url code=${resp.code()}")
+                    Log.d("WATER", "URL=${resp.raw().request.url} code=${resp.code()}")
 
-                    if (!resp.isSuccessful) {
-                        // 例如 404/500：通常是路由或後端錯誤
-                        return
-                    }
-                    val list = resp.body()?.data.orEmpty()
-                    if (list.isEmpty()) {
-                        // 沒資料就不加 row；你也可以放一張「目前無通報」卡片
-                        return
-                    }
+                    if (!resp.isSuccessful) return
 
-                    // 映射成你現有的卡片資料結構（沿用 QuakeCard）
-                    val rowAdapter = androidx.leanback.widget.ArrayObjectAdapter(cardPresenter)
+                    // ★ 正確：從 items 取資料，並指定型別讓 o 被推成 WaterOutage
+                    val list: List<WaterOutage> = resp.body()?.data ?: emptyList()
+                    if (list.isEmpty()) return
+
+                    val rowAdapter = ArrayObjectAdapter(cardPresenter)
                     list.forEach { o ->
                         rowAdapter.add(
                             QuakeCard(
                                 title = "停水/降壓",
-                                content = "開始:${o.start_time ?: "-"}  結束:${o.end_time ?: "-"}\n區域:${o.water_outage_areas ?: "-"}",
-                                imageUrl = "" // 沒圖就空字串
+                                content = "開始:${o.start_time}  結束:${o.end_time}\n區域:${o.water_outage_areas}",
+                                imageUrl = "" // 沒圖就留空
                             )
                         )
                     }
 
-                    rowsAdapter.add(
-                        androidx.leanback.widget.ListRow(
-                            androidx.leanback.widget.HeaderItem("停水/降壓"),
-                            rowAdapter
-                        )
-                    )
+                    // 建議帶一個不與前兩個重複的 id
+                    rowsAdapter.add(ListRow(HeaderItem(2, "停水 / 降壓"), rowAdapter))
                 }
 
-                override fun onFailure(call: retrofit2.Call<WaterOutagesResponse>, t: Throwable) {
-                    android.util.Log.e("WATER", "failure: ${t.message}")
+                override fun onFailure(call: Call<WaterOutagesResponse>, t: Throwable) {
+                    Log.e("WATER", "failure: ${t.message}")
                 }
             })
     }
-
-
-
 
 
     companion object {
