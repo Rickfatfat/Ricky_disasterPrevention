@@ -201,9 +201,4 @@ class HomeActivity : AppCompatActivity() {
                 }
             })
     }
-
-
-
-
-
 }

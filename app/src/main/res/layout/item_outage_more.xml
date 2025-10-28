@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#111111"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- 停水區域 -->
+    <TextView
+        android:id="@+id/tv_item_area"
+        android:text="臺中市／西屯區／永康里…"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- 停水時間 -->
+    <TextView
+        android:id="@+id/tv_item_time"
+        android:text="時間：10/08 10:14 ~ 10/08 17:00"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:layout_marginTop="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- 停水原因 -->
+    <TextView
+        android:id="@+id/tv_item_reason"
+        android:text="原因：管線破損搶修"
+        android:textColor="#BBBBBB"
+        android:textSize="14sp"
+        android:layout_marginTop="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
