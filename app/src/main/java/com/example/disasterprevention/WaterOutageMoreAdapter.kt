@@ -1,95 +1,73 @@
 package com.example.disasterprevention
 
-import android.content.Intent
 import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
-import androidx.recyclerview.widget.RecyclerView
-import android.widget.TextView
 import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
 class WaterOutageMoreAdapter(
-    private val items: List<WaterOutage>
+    private val dataList: List<WaterOutage>,
+    private val onItemClick: (WaterOutage) -> Unit
 ) : RecyclerView.Adapter<WaterOutageMoreAdapter.VH>() {
 
-    class VH(parent: ViewGroup) : RecyclerView.ViewHolder(
-        LayoutInflater.from(parent.context).inflate(
-            R.layout.item_outage_more, parent, false
-        )
-    ) {
-        val root: View = itemView
-        val tvArea: TextView = itemView.findViewById(R.id.tv_item_area)
-        val tvTime: TextView = itemView.findViewById(R.id.tv_item_time)
-        val tvReason: TextView = itemView.findViewById(R.id.tv_item_reason)
+    inner class VH(view: View) : RecyclerView.ViewHolder(view) {
+
+        private val rootRow = view.findViewById<View>(R.id.root_row)
+        private val tvTitle = view.findViewById<TextView>(R.id.tv_more_title)
+        private val tvArea  = view.findViewById<TextView>(R.id.tv_more_area)
+        private val tvTime  = view.findViewById<TextView>(R.id.tv_more_time)
+
+        fun bind(item: WaterOutage) {
+
+            // ---- 1. 填資料 ------------------------------------------------
+            tvTitle.text = "【公告 ${adapterPosition + 1}】"
+            tvArea.text  = "區域：${item.water_outage_areas ?: "-"}"
+            tvTime.text  =
+                "時間：${item.start_time ?: "-"} ~ ${item.end_time ?: "-"}"
+
+            // ---- 2. 遙控器移上 / 移走 的放大縮回 --------------------------
+            rootRow.setOnFocusChangeListener { v, hasFocus ->
+                // 先把舊動畫停掉，避免殘留/累加
+                v.animate().cancel()
+
+                if (hasFocus) {
+                    // 有焦點：放大一點點，滑順
+                    v.animate()
+                        .scaleX(1.07f)
+                        .scaleY(1.07f)
+                        .setDuration(120L)
+                        .setInterpolator(
+                            android.view.animation.DecelerateInterpolator()
+                        )
+                        .start()
+                } else {
+                    // 失去焦點：直接還原，不要再播一段縮小動畫
+                    v.scaleX = 1f
+                    v.scaleY = 1f
+                }
+            }
+
+            // ---- 3. OK/Enter 點下去：進詳細頁 ----------------------------
+            rootRow.setOnClickListener {
+                // 這裡不再額外做「再縮一次」的動畫
+                // 直接呼叫外面傳進來的 callback 去開詳細頁
+                onItemClick(item)
+            }
+        }
     }
 
-    private fun shortenTime(raw: String?): String {
-        if (raw.isNullOrBlank()) return "-"
-        val parts = raw.split(" ")
-        if (parts.size < 2) return raw
-        val datePart = parts[0]
-        val timePart = parts[1]
-        val dateTokens = datePart.split("-")
-        val mmdd = if (dateTokens.size == 3) {
-            "${dateTokens[1]}/${dateTokens[2]}"
-        } else {
-            datePart
-        }
-        val hhmm = timePart.substring(0, 5)
-        return "$mmdd $hhmm"
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        return VH(parent)
+        val v = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_outage_more, parent, false)
+        return VH(v)
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        val data = items[position]
-
-        val startPretty = shortenTime(data.start_time)
-        val endPretty   = shortenTime(data.end_time)
-
-        holder.tvArea.text = data.water_outage_areas ?: "未提供區域"
-        holder.tvTime.text = "時間：$startPretty ~ $endPretty"
-        holder.tvReason.text = "原因：${data.reason ?: "未提供"}"
-
-        // <--- 這裡開始處理點擊動畫 + 導頁 --->
-        holder.root.setOnClickListener { view ->
-            // 1) 按下去先做一個輕微縮放，然後彈回來
-            view.animate()
-                .scaleX(0.96f)
-                .scaleY(0.96f)
-                .setDuration(80)
-                .setInterpolator(DecelerateInterpolator())
-                .withEndAction {
-                    // 彈回來
-                    view.animate()
-                        .scaleX(1f)
-                        .scaleY(1f)
-                        .setDuration(80)
-                        .setInterpolator(DecelerateInterpolator())
-                        .withEndAction {
-                            // 動畫結束 -> 開詳細頁
-                            val ctx = view.context
-                            val intent = Intent(ctx, WaterOutageDetailsActivity::class.java)
-                            intent.putExtra("outage", data)
-
-                            // 你也可以在這裡加轉場動畫的 flag 讓 Activity 有進場效果
-                            ctx.startActivity(intent)
-
-                            if (ctx is android.app.Activity) {
-                                // slide in from right + 減淡背景（可用你現有的動畫資源）
-                                ctx.overridePendingTransition(
-                                    R.anim.slide_in_right,
-                                    R.anim.fade_out
-                                )
-                            }
-                        }
-                        .start()
-                }
-                .start()
-        }
+        val outage = dataList[position]
+        holder.bind(outage)
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = dataList.size
 }

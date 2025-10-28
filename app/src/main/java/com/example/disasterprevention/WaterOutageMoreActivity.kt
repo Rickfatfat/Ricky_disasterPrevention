@@ -1,41 +1,45 @@
 package com.example.disasterprevention
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.disasterprevention.R
-
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class WaterOutageMoreActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // 這要對到 "第三層" 的版面
         setContentView(R.layout.activity_water_outage_more)
 
-        // 這個 TextView 一定要在 activity_water_outage_more.xml 裡面存在
-        val tvList = findViewById<TextView>(R.id.tv_more_list)
+        // 1. RecyclerView
+        val rv = findViewById<RecyclerView>(R.id.rv_more_list)
+        rv.layoutManager = LinearLayoutManager(this)
 
-        // 從 Intent 拿到第二層傳來的列表
+        // 2. 取得上一層傳來的公告列表
         val moreList: ArrayList<WaterOutage>? =
             intent.getParcelableArrayListExtra("more_outages")
 
-        if (moreList.isNullOrEmpty()) {
-            tvList.text = "無其他公告"
-            return
-        }
+        // 3. 防呆：如果 null 就用空陣列
+        val listForUI: List<WaterOutage> = moreList ?: emptyList()
 
-        // 把每則公告整理成可讀文字
-        val builder = StringBuilder()
-        moreList.forEachIndexed { idx, o ->
-            builder.appendLine("【公告 ${idx + 1}】")
-            builder.appendLine("區域：${o.water_outage_areas ?: "無資料"}")
-            builder.appendLine("時間：${o.start_time ?: "?"} ~ ${o.end_time ?: "?"}")
-            builder.appendLine("原因：${o.reason ?: "無資料"}")
-            builder.appendLine()
-        }
+        // 4. 設定 Adapter，並把「點到一列的行為」傳進去
+        rv.adapter = WaterOutageMoreAdapter(
+            listForUI
+        ) { outageItem ->
+            // 使用者真的按下某一列了 -> 開詳細頁
+            val detailIntent = Intent(
+                this,
+                WaterOutageMoreDetailsActivity::class.java
+            )
+            detailIntent.putExtra("outage_detail", outageItem)
+            startActivity(detailIntent)
 
-        tvList.text = builder.toString()
+            // 保留下頁切換動畫（可選）
+            overridePendingTransition(
+                R.anim.slide_in_right,
+                R.anim.fade_out
+            )
+        }
     }
 }

@@ -62,6 +62,9 @@
         <activity
             android:name=".WaterOutageMoreActivity"
             android:exported="false" />
+        <activity
+            android:name=".WaterOutageMoreDetailsActivity"
+            android:exported="false" />
 
 
 
