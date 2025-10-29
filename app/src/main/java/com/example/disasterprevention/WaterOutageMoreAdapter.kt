@@ -5,56 +5,79 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import android.view.animation.DecelerateInterpolator
 
 class WaterOutageMoreAdapter(
     private val dataList: List<WaterOutage>,
     private val onItemClick: (WaterOutage) -> Unit
 ) : RecyclerView.Adapter<WaterOutageMoreAdapter.VH>() {
 
+    // --- ViewHolder ---
     inner class VH(view: View) : RecyclerView.ViewHolder(view) {
 
         private val rootRow = view.findViewById<View>(R.id.root_row)
         private val tvTitle = view.findViewById<TextView>(R.id.tv_more_title)
-        private val tvArea  = view.findViewById<TextView>(R.id.tv_more_area)
+        private val tvReason  = view.findViewById<TextView>(R.id.tv_more_reason)
         private val tvTime  = view.findViewById<TextView>(R.id.tv_more_time)
 
         fun bind(item: WaterOutage) {
 
-            // ---- 1. 填資料 ------------------------------------------------
-            tvTitle.text = "【公告 ${adapterPosition + 1}】"
-            tvArea.text  = "區域：${item.water_outage_areas ?: "-"}"
-            tvTime.text  =
-                "時間：${item.start_time ?: "-"} ~ ${item.end_time ?: "-"}"
+            // --- A. 處理「原因」 ---
+            tvReason.text = "原因：${item.reason ?: "未提供"}"
 
-            // ---- 2. 遙控器移上 / 移走 的放大縮回 --------------------------
+            // --- B. 處理「時間」 ---
+            tvTime.text = "時間：${item.start_time ?: "-"} ~ ${item.end_time ?: "-"}"
+
+            // --- C. 處理「動態標題」 (依賴於原因和區域欄位) ---
+            val checkText = item.reason ?: ""
+            val hasOutage = checkText.contains("停水") || checkText.contains("無水")
+            val hasPressureDrop = checkText.contains("降壓")
+
+            val titleTypes = mutableListOf<String>()
+            if (hasOutage) titleTypes.add("停水")
+            if (hasPressureDrop) titleTypes.add("降壓")
+
+            // 如果原因中沒有關鍵字，則從區域欄位判斷
+            if (titleTypes.isEmpty()) {
+                if (item.water_outage_areas.takeIf { it != null && it != "null" } != null) {
+                    titleTypes.add("停水")
+                }
+                if (item.Buck_area.takeIf { it != null && it != "null" } != null) {
+                    titleTypes.add("降壓")
+                }
+            }
+
+            if (titleTypes.isEmpty()) {
+                tvTitle.text = "最新公告"
+            } else {
+                // .distinct() 是為了防止 "停水" 被加入兩次
+                tvTitle.text = titleTypes.distinct().joinToString("及") + "資訊"
+            }
+
+            // --- D. 處理「動畫」和「點擊」 ---
+
+            // 遙控器移上 / 移走 的放大縮回
             rootRow.setOnFocusChangeListener { v, hasFocus ->
-                // 先把舊動畫停掉，避免殘留/累加
                 v.animate().cancel()
-
                 if (hasFocus) {
-                    // 有焦點：放大一點點，滑順
                     v.animate()
                         .scaleX(1.07f)
                         .scaleY(1.07f)
                         .setDuration(120L)
-                        .setInterpolator(
-                            android.view.animation.DecelerateInterpolator()
-                        )
+                        .setInterpolator(DecelerateInterpolator())
                         .start()
                 } else {
-                    // 失去焦點：直接還原，不要再播一段縮小動畫
                     v.scaleX = 1f
                     v.scaleY = 1f
                 }
             }
 
-            // ---- 3. OK/Enter 點下去：進詳細頁 ----------------------------
+            // OK/Enter 點下去：進詳細頁
             rootRow.setOnClickListener {
-                // 這裡不再額外做「再縮一次」的動畫
-                // 直接呼叫外面傳進來的 callback 去開詳細頁
                 onItemClick(item)
             }
         }
+        // --- bind 方法結束 ---
     }
 
 

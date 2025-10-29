@@ -10,6 +10,6 @@ data class WaterOutage(
     val end_time: String?,
     val time_duration: String?,
     val water_outage_areas: String?,
-    val bock_area: String?
+    val Buck_area: String?
 
 ) : Parcelable

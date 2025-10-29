@@ -31,7 +31,7 @@ class WaterOutageDescriptionPresenter : AbstractDetailsDescriptionPresenter() {
         val bodyText = buildString {
             appendLine("原因：${data.reason ?: "未提供"}")
             appendLine("停水區域：${data.water_outage_areas ?: "未提供"}")
-            appendLine("減壓區域：${data.bock_area ?: "未提供"}")
+            appendLine("減壓區域：${data.Buck_area ?: "未提供"}")
         }.trim()
 
         vh.body.text = bodyText

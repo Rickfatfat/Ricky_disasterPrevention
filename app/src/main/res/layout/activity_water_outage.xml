@@ -14,37 +14,40 @@
             android:id="@+id/tv_title"
             android:text="停水資訊"
             android:textColor="#FFFFFF"
+            android:textSize="32sp"
             android:textStyle="bold"
-            android:textSize="24sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp" />
 
         <TextView
-            android:id="@+id/tv_area"
-            android:text="影響區域："
+            android:id="@+id/tv_reason"
+            android:text="原因："
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
+            android:textSize="20sp"
+            android:layout_marginTop="24dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/tv_time"
             android:text="停水時間："
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
+            android:textSize="20sp"
+            android:layout_marginTop="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+        <TextView
+            android:id="@+id/tv_area"
+            android:text="影響區域："
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:layout_marginTop="24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp" />
 
-        <TextView
-            android:id="@+id/tv_reason"
-            android:text="原因："
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
         <Button
             android:id="@+id/btn_more"
             android:layout_width="wrap_content"

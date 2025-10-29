@@ -100,6 +100,8 @@ class HomeActivity : AppCompatActivity() {
         adapter.notifyItemInserted(cardItems.size - 1)
     }
     // 卡3：停水資訊
+    // 卡3：停水資訊
+    // 卡3：停水資訊
     private fun addWaterOutageCard() {
         RetrofitClient.instance
             .getWaterOutages(county = "台中市")
@@ -112,15 +114,41 @@ class HomeActivity : AppCompatActivity() {
                     val first: WaterOutage? = all.firstOrNull()
                     val rest: List<WaterOutage> = if (all.size > 1) all.drop(1) else emptyList()
 
-                    // ----- 格式化 for 卡片兩行摘要 -----
-                    val areaShort = first?.water_outage_areas
-                        ?.let { full ->
-                            val tokens = full.split("、", "，", ",", " ", "。")
-                                .filter { it.isNotBlank() }
-                            if (tokens.isNotEmpty()) tokens[0] else full
-                        }
-                        ?: "地區未提供"
+                    // ----- 格式化 for 卡片兩行摘要 (已修改) -----
 
+                    // 1. 濃縮原因的函式
+                    fun summarizeReason(fullReason: String?): String {
+                        if (fullReason.isNullOrBlank()) {
+                            return "原因未提供"
+                        }
+
+                        // 定義關鍵字和對應的簡短描述 (按優先級排序)
+                        val keywordMap = linkedMapOf(
+                            "施工" to "管線施工",
+                            "工程" to "工程施工",
+                            "維修" to "管線維修",
+                            "搶修" to "緊急搶修",
+                            "修復" to "設備修復",
+                            "汰換" to "設備汰換",
+                            "改接" to "管線改接",
+                            "清洗" to "水池清洗",
+                            "新裝" to "新裝工程",
+                            "停電" to "配合停電"
+                        )
+
+                        // 遍歷關鍵字列表，找到第一個匹配的關鍵字
+                        for ((keyword, summary) in keywordMap) {
+                            if (fullReason.contains(keyword)) {
+                                return summary // 找到就回傳簡短描述
+                            }
+                        }
+
+                        // 如果都沒找到，回傳原始原因的第一句話
+                        return fullReason.split("，", "。", "、", " ").firstOrNull() ?: fullReason
+                    }
+
+
+                    // 2. 格式化時間的函式 (保留不動)
                     fun shortenTime(raw: String?): String {
                         if (raw.isNullOrBlank()) return "-"
                         val parts = raw.split(" ")
@@ -137,21 +165,24 @@ class HomeActivity : AppCompatActivity() {
                         return "$mmdd $hhmm"
                     }
 
+                    // 3. 取得濃縮後的原因和格式化後的時間
+                    val reason = summarizeReason(first?.reason)
                     val startPretty = shortenTime(first?.start_time)
                     val endPretty   = shortenTime(first?.end_time)
 
+                    // 4. 組合新的副標題文字
                     val subtitle = if (first != null) {
-                        "區域：$areaShort\n時間：$startPretty ~ $endPretty"
+                        "原因：$reason\n時間：$startPretty ~ $endPretty"
                     } else {
                         "目前無台中市停水公告"
                     }
 
                     val firstOutageForClick = first
-                    val restOutagesForClick = ArrayList(rest) // 重要：Intent 要 ArrayList<Parcelable>
+                    val restOutagesForClick = ArrayList(rest)
 
                     val item = CardItem(
                         title = "停水資訊",
-                        subtitle = subtitle,
+                        subtitle = subtitle, // 使用新的副標題
                         backgroundColor = Color.parseColor("#e0f7fa"),
                         titleColor = Color.parseColor("#003b4a"),
                         subtitleColor = Color.parseColor("#003b4a"),
@@ -185,7 +216,6 @@ class HomeActivity : AppCompatActivity() {
                         iconResId = R.drawable.wateroutage,
                         onClick = {
                             val intent = Intent(this@HomeActivity, WaterOutageActivity::class.java)
-                            // 傳空也可以，第三層就會是空
                             intent.putExtra("first_outage", null as WaterOutage?)
                             intent.putParcelableArrayListExtra("more_outages", ArrayList())
                             startActivity(intent)
@@ -201,4 +231,5 @@ class HomeActivity : AppCompatActivity() {
                 }
             })
     }
+
 }
