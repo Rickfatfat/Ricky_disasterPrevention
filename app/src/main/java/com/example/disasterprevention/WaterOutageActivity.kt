@@ -3,127 +3,165 @@ package com.example.disasterprevention
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+
+// ---------- 共用工具（檔案頂部；第二層/第四層皆可重用） ----------
+
+// 把 "null" 字串與空白都視為無效
+private fun String?.isNullOrBlankOrLiteralNull(): Boolean =
+    this.isNullOrBlank() || this.equals("null", ignoreCase = true)
+
+// 依「欄位優先於 reason 關鍵字」決定頁面標題
+private fun titleFor(outage: WaterOutage): String {
+    val hasWaterArea    = !outage.water_outage_areas.isNullOrBlankOrLiteralNull()
+    val hasPressureArea = !outage.Buck_area.isNullOrBlankOrLiteralNull()
+
+    // 先看實際欄位（有則以此為準）
+    if (hasWaterArea && hasPressureArea) return "停水及降壓資訊"
+    if (hasWaterArea) return "停水資訊"
+    if (hasPressureArea) return "降壓資訊"
+
+    // 欄位都沒有再看理由關鍵字
+    val reason = outage.reason.orEmpty()
+    val hasOutageByReason   = reason.contains("停水") || reason.contains("無水")
+    val hasPressureByReason = reason.contains("降壓")
+    return when {
+        hasOutageByReason && hasPressureByReason -> "停水及降壓資訊"
+        hasOutageByReason                        -> "停水資訊"
+        hasPressureByReason                      -> "降壓資訊"
+        else                                     -> "最新公告"
+    }
+}
 
 class WaterOutageActivity : AppCompatActivity() {
 
     private val TAG = "WaterOutageActivity"
 
+    // yyyy-MM-dd HH:mm:ss -> MM/dd HH:mm；失敗就回原字串或 "-"
+    private fun shortenTime(raw: String?): String {
+        if (raw.isNullOrBlank()) return "-"
+        val parts = raw.split(" ")
+        if (parts.size < 2) return raw
+        val datePart = parts[0]              // yyyy-MM-dd
+        val timePart = parts[1]              // HH:mm:ss
+        val dateTokens = datePart.split("-")
+        val mmdd = if (dateTokens.size == 3) {
+            "${dateTokens[1]}/${dateTokens[2]}" // 10/29
+        } else datePart
+        val hhmm = timePart.take(5)          // 09:30
+        return "$mmdd $hhmm"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_water_outage)
 
-        // 1. 拿到資料
+        // 1) 取得上一層傳來的資料
         val outage: WaterOutage? =
             intent.getParcelableExtra("first_outage")
         val moreList: ArrayList<WaterOutage>? =
             intent.getParcelableArrayListExtra("more_outages")
 
-        // 2.5 Log (保留，每次除錯都看)
+        // 2) 除錯用 Log
         Log.d(TAG, "===================== 收到資料 =====================")
         Log.d(TAG, "第一筆停水資料 (outage): $outage")
         Log.d(TAG, "更多公告列表 (moreList): $moreList")
-        Log.d(TAG, "===================================================")
+        Log.d(TAG, "====================================================")
 
-        // 3. 把畫面上的元件找出來
-        val tvTitle = findViewById<TextView>(R.id.tv_title)
-        val tvArea = findViewById<TextView>(R.id.tv_area)       // 這個 TextView 將用來顯示「區域」
-        val tvTime = findViewById<TextView>(R.id.tv_time)       // 這個 TextView 將用來顯示「時間」
-        val tvReason = findViewById<TextView>(R.id.tv_reason)   // 這個 TextView 將用來顯示「原因」
-        val btnMore = findViewById<Button>(R.id.btn_more)
+        // 3) findViewById（這些 TextView 在 XML 已有大標題，這裡只塞內容）
+        val tvTitle  = findViewById<TextView>(R.id.tv_title)
+        val tvReason = findViewById<TextView>(R.id.tv_reason)           // 只放「原因內容」
+        val tvTime   = findViewById<TextView>(R.id.tv_time)             // 只放「時間內容」
 
-        // 4. 塞資料進畫面（第一筆）
+        // 新版版面：分開顯示「停水區域 / 降壓區域」，各自有標題，無資料就隱藏
+        val labelWater     = findViewById<TextView>(R.id.label_water_area)
+        val tvWaterArea    = findViewById<TextView>(R.id.tv_water_area)
+        val labelPressure  = findViewById<TextView>(R.id.label_pressure_area)
+        val tvPressureArea = findViewById<TextView>(R.id.tv_pressure_area)
+        val tvAreaEmpty    = findViewById<TextView>(R.id.tv_area_empty) // 兩者皆無時顯示
+
+        val btnMore  = findViewById<Button>(R.id.btn_more)
+
+        // 4) 塞畫面資料
         if (outage != null) {
 
-            // --- A. 處理「原因」和「時間」(將顯示在畫面上方) ---
+            // ---- A. 標題（統一用共用邏輯）----
+            tvTitle.text = titleFor(outage)
 
-            // --- 修改點 1: 加上 "原因：\n" 標題 ---
-            tvReason.text = "原因：\n" + (outage.reason ?: "無原因說明")
+            // ---- B. 原因（只塞內容）----
+            val reasonText = if (!outage.reason.isNullOrBlankOrLiteralNull())
+                outage.reason!!.trim()
+            else
+                "未提供"
+            tvReason.text = reasonText
 
-            // --- 修改點 2: 加上 "影響時間：\n" 標題 ---
-            val startStr = outage.start_time ?: "-"
-            val endStr = outage.end_time ?: "-"
-            tvTime.text = "影響時間：\n$startStr ~ $endStr"
+            // ---- C. 影響時間（只塞內容）----
+            val startPretty = shortenTime(outage.start_time)
+            val endPretty   = shortenTime(outage.end_time)
+            tvTime.text = if (startPretty != "-" || endPretty != "-")
+                "$startPretty ~ $endPretty" else "未提供"
 
-            // --- B. 處理「影響區域」顯示 (將顯示在畫面下方, 這裡的邏輯已經包含標題了, 所以不需修改) ---
-            val areaOutage = outage.water_outage_areas.takeIf { it != null && it != "null" }
-            val areaPressure = outage.Buck_area.takeIf { it != null && it != "null" }
+            // ---- D. 影響區域：分開顯示「停水」與「降壓」 ----
+            val waterArea = outage.water_outage_areas
+                ?.takeUnless { it.isNullOrBlankOrLiteralNull() }
+                ?.trim()
 
-            val areaDisplayBuilder = StringBuilder()
+            val pressureArea = outage.Buck_area   // 注意：模型欄位 B 大寫
+                ?.takeUnless { it.isNullOrBlankOrLiteralNull() }
+                ?.trim()
 
-            if (areaOutage != null) {
-                areaDisplayBuilder.append("停水區域：\n")
-                areaDisplayBuilder.append(areaOutage.trim())
-            }
-
-            if (areaPressure != null) {
-                if (areaDisplayBuilder.isNotEmpty()) {
-                    areaDisplayBuilder.append("\n\n")
-                }
-                areaDisplayBuilder.append("降壓區域：\n")
-                areaDisplayBuilder.append(areaPressure.trim())
-            }
-
-            if (areaDisplayBuilder.isEmpty()) {
-                // 由於之前的對調, tvArea 現在用來顯示區域
-                tvArea.text = "影響區域：N/A"
+            // 停水區域
+            if (waterArea != null) {
+                labelWater.visibility = View.VISIBLE
+                tvWaterArea.visibility = View.VISIBLE
+                tvWaterArea.text = waterArea
             } else {
-                tvArea.text = areaDisplayBuilder.toString()
+                labelWater.visibility = View.GONE
+                tvWaterArea.visibility = View.GONE
             }
 
-
-            // --- C. 處理「動態標題」 (邏輯不變) ---
-            val checkText = outage.reason ?: ""
-            val hasOutage = checkText.contains("停水") || checkText.contains("無水")
-            val hasPressureDrop = checkText.contains("降壓")
-
-            val titleTypes = mutableListOf<String>()
-            if (hasOutage) titleTypes.add("停水")
-            if (hasPressureDrop) titleTypes.add("降壓")
-
-            if (titleTypes.isEmpty()) {
-                if (areaOutage != null) titleTypes.add("停水")
-                if (areaPressure != null) titleTypes.add("降壓")
-            }
-
-            if (titleTypes.isEmpty()) {
-                tvTitle.text = "最新公告"
+            // 降壓區域
+            if (pressureArea != null) {
+                labelPressure.visibility = View.VISIBLE
+                tvPressureArea.visibility = View.VISIBLE
+                tvPressureArea.text = pressureArea
             } else {
-                tvTitle.text = titleTypes.joinToString("及") + "資訊"
+                labelPressure.visibility = View.GONE
+                tvPressureArea.visibility = View.GONE
             }
+
+            // 兩者都沒有 → 顯示備援訊息
+            tvAreaEmpty.visibility =
+                if (waterArea == null && pressureArea == null) View.VISIBLE else View.GONE
 
         } else {
-            // 資料為空的情況
-            tvTitle.text = "公告"
-            tvReason.text = "原因：\n無資料"
-            tvTime.text = "影響時間：\n-"
-            tvArea.text = "影響區域：\n-"
+            // 無資料時的保底（只放內容，不含標題字樣）
+            tvTitle.text  = "公告"
+            tvReason.text = "未提供"
+            tvTime.text   = "未提供"
+
+            labelWater.visibility = View.GONE
+            tvWaterArea.visibility = View.GONE
+            labelPressure.visibility = View.GONE
+            tvPressureArea.visibility = View.GONE
+            tvAreaEmpty.visibility = View.VISIBLE
         }
 
-        // 5. 設定「更多公告」按鈕 (保持不變)
+        // 5) 更多公告按鈕
         if (moreList.isNullOrEmpty()) {
             btnMore.isEnabled = false
             btnMore.alpha = 0.3f
         } else {
             btnMore.isEnabled = true
             btnMore.alpha = 1f
-
             btnMore.setOnClickListener {
-                val intent = Intent(
-                    this,
-                    WaterOutageMoreActivity::class.java
-                )
-                intent.putParcelableArrayListExtra(
-                    "more_outages",
-                    moreList
-                )
+                val intent = Intent(this, WaterOutageMoreActivity::class.java)
+                intent.putParcelableArrayListExtra("more_outages", moreList)
                 startActivity(intent)
-                overridePendingTransition(
-                    R.anim.slide_in_right,
-                    R.anim.fade_out
-                )
+                overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
             }
         }
     }

@@ -7,56 +7,56 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.view.animation.DecelerateInterpolator
 
+// 共用：把 "null" 字串與空白都視為無資料
+private fun String?.isNullOrBlankOrLiteralNull(): Boolean =
+    this.isNullOrBlank() || this.equals("null", ignoreCase = true)
+
+// 共用：第三層卡片標題決策（欄位優先，其次 reason 關鍵字）
+private fun titleFor(o: WaterOutage): String {
+    val hasWater    = !o.water_outage_areas.isNullOrBlankOrLiteralNull()
+    val hasPressure = !o.Buck_area.isNullOrBlankOrLiteralNull()
+
+    if (hasWater && hasPressure) return "停水及降壓資訊"
+    if (hasWater) return "停水資訊"
+    if (hasPressure) return "降壓資訊"
+
+    val r = o.reason.orEmpty()
+    val outageByReason   = r.contains("停水") || r.contains("無水")
+    val pressureByReason = r.contains("降壓")
+    return when {
+        outageByReason && pressureByReason -> "停水及降壓資訊"
+        outageByReason -> "停水資訊"
+        pressureByReason -> "降壓資訊"
+        else -> "最新公告"
+    }
+}
+
 class WaterOutageMoreAdapter(
     private val dataList: List<WaterOutage>,
     private val onItemClick: (WaterOutage) -> Unit
 ) : RecyclerView.Adapter<WaterOutageMoreAdapter.VH>() {
 
-    // --- ViewHolder ---
     inner class VH(view: View) : RecyclerView.ViewHolder(view) {
 
         private val rootRow = view.findViewById<View>(R.id.root_row)
         private val tvTitle = view.findViewById<TextView>(R.id.tv_more_title)
-        private val tvReason  = view.findViewById<TextView>(R.id.tv_more_reason)
-        private val tvTime  = view.findViewById<TextView>(R.id.tv_more_time)
+        private val tvReason = view.findViewById<TextView>(R.id.tv_more_reason)
+        private val tvTime = view.findViewById<TextView>(R.id.tv_more_time)
 
         fun bind(item: WaterOutage) {
+            // 標題：依欄位優先、reason 後備
+            tvTitle.text = titleFor(item)
 
-            // --- A. 處理「原因」 ---
-            tvReason.text = "原因：${item.reason ?: "未提供"}"
+            // 原因
+            val reasonText = item.reason?.takeUnless { it.isNullOrBlankOrLiteralNull() } ?: "未提供"
+            tvReason.text = "原因：$reasonText"
 
-            // --- B. 處理「時間」 ---
-            tvTime.text = "時間：${item.start_time ?: "-"} ~ ${item.end_time ?: "-"}"
+            // 時間
+            val startStr = item.start_time?.takeUnless { it.isNullOrBlankOrLiteralNull() } ?: "-"
+            val endStr   = item.end_time?.takeUnless { it.isNullOrBlankOrLiteralNull() } ?: "-"
+            tvTime.text = "時間：$startStr ~ $endStr"
 
-            // --- C. 處理「動態標題」 (依賴於原因和區域欄位) ---
-            val checkText = item.reason ?: ""
-            val hasOutage = checkText.contains("停水") || checkText.contains("無水")
-            val hasPressureDrop = checkText.contains("降壓")
-
-            val titleTypes = mutableListOf<String>()
-            if (hasOutage) titleTypes.add("停水")
-            if (hasPressureDrop) titleTypes.add("降壓")
-
-            // 如果原因中沒有關鍵字，則從區域欄位判斷
-            if (titleTypes.isEmpty()) {
-                if (item.water_outage_areas.takeIf { it != null && it != "null" } != null) {
-                    titleTypes.add("停水")
-                }
-                if (item.Buck_area.takeIf { it != null && it != "null" } != null) {
-                    titleTypes.add("降壓")
-                }
-            }
-
-            if (titleTypes.isEmpty()) {
-                tvTitle.text = "最新公告"
-            } else {
-                // .distinct() 是為了防止 "停水" 被加入兩次
-                tvTitle.text = titleTypes.distinct().joinToString("及") + "資訊"
-            }
-
-            // --- D. 處理「動畫」和「點擊」 ---
-
-            // 遙控器移上 / 移走 的放大縮回
+            // 焦點放大動畫
             rootRow.setOnFocusChangeListener { v, hasFocus ->
                 v.animate().cancel()
                 if (hasFocus) {
@@ -72,14 +72,10 @@ class WaterOutageMoreAdapter(
                 }
             }
 
-            // OK/Enter 點下去：進詳細頁
-            rootRow.setOnClickListener {
-                onItemClick(item)
-            }
+            // 點擊跳詳細
+            rootRow.setOnClickListener { onItemClick(item) }
         }
-        // --- bind 方法結束 ---
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val v = LayoutInflater.from(parent.context)
@@ -88,8 +84,7 @@ class WaterOutageMoreAdapter(
     }
 
     override fun onBindViewHolder(holder: VH, position: Int) {
-        val outage = dataList[position]
-        holder.bind(outage)
+        holder.bind(dataList[position])
     }
 
     override fun getItemCount(): Int = dataList.size

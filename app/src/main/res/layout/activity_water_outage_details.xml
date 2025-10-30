@@ -1,49 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#000000"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#000000"
     android:padding="24dp">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <!-- 頁面主標題（Kotlin 會依資料改成：停水 / 降壓 / 停水及降壓 / 最新公告） -->
         <TextView
             android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
             android:text="停水資訊"
             android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:textSize="24sp"
+            android:textSize="48sp"
+            android:textStyle="bold" />
+
+        <!-- ===== 區塊 1：原因 ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:id="@+id/tv_reason_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="原因："
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_reason"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="_"
+                android:textColor="#DADADA"
+                android:textSize="20sp"
+                android:lineSpacingExtra="6dp" />
+        </LinearLayout>
+
+        <!-- ===== 區塊 2：影響時間 ===== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:id="@+id/tv_time_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="影響時間："
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="_"
+                android:textColor="#DADADA"
+                android:textSize="20sp"
+                android:lineSpacingExtra="6dp" />
+        </LinearLayout>
+
+        <!-- ===== 區塊 3：影響區域（分開顯示） ===== -->
+        <!-- 停水區域 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:id="@+id/label_water_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="停水區域："
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_water_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="_"
+                android:textColor="#DADADA"
+                android:textSize="20sp"
+                android:lineSpacingExtra="6dp" />
+        </LinearLayout>
+
+        <!-- 降壓區域 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/label_pressure_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="降壓區域："
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_pressure_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="_"
+                android:textColor="#DADADA"
+                android:textSize="20sp"
+                android:lineSpacingExtra="6dp" />
+        </LinearLayout>
+
+        <!-- 兩者都沒有時的備援提示 -->
+        <TextView
+            android:id="@+id/tv_area_empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginTop="16dp"
+            android:text="影響區域：未提供"
+            android:textColor="#DADADA"
+            android:textSize="20sp"
+            android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/tv_area"
-            android:text="影響區域："
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:id="@+id/tv_time"
-            android:text="停水時間："
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
-
-        <TextView
-            android:id="@+id/tv_reason"
-            android:text="原因："
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
     </LinearLayout>
 </ScrollView>

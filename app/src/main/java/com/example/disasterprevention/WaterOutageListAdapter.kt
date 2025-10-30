@@ -13,7 +13,7 @@ class WaterOutageListAdapter(
 
     class VH(view: View) : RecyclerView.ViewHolder(view) {
         val tvTitle: TextView = view.findViewById(R.id.tv_title)
-        val tvArea: TextView = view.findViewById(R.id.tv_area)
+        val tvArea: TextView = view.findViewById(R.id.tv_reason)
         val tvTime: TextView = view.findViewById(R.id.tv_time)
     }
 
