@@ -3,28 +3,23 @@ package com.example.disasterprevention
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
-// ---------- 共用工具（檔案頂部；第二層/第四層皆可重用） ----------
-
-// 把 "null" 字串與空白都視為無效
+// ---------- 共用工具 ----------
 private fun String?.isNullOrBlankOrLiteralNull(): Boolean =
     this.isNullOrBlank() || this.equals("null", ignoreCase = true)
 
-// 依「欄位優先於 reason 關鍵字」決定頁面標題
 private fun titleFor(outage: WaterOutage): String {
     val hasWaterArea    = !outage.water_outage_areas.isNullOrBlankOrLiteralNull()
     val hasPressureArea = !outage.Buck_area.isNullOrBlankOrLiteralNull()
-
-    // 先看實際欄位（有則以此為準）
     if (hasWaterArea && hasPressureArea) return "停水及降壓資訊"
     if (hasWaterArea) return "停水資訊"
     if (hasPressureArea) return "降壓資訊"
 
-    // 欄位都沒有再看理由關鍵字
     val reason = outage.reason.orEmpty()
     val hasOutageByReason   = reason.contains("停水") || reason.contains("無水")
     val hasPressureByReason = reason.contains("降壓")
@@ -40,80 +35,82 @@ class WaterOutageActivity : AppCompatActivity() {
 
     private val TAG = "WaterOutageActivity"
 
-    // yyyy-MM-dd HH:mm:ss -> MM/dd HH:mm；失敗就回原字串或 "-"
     private fun shortenTime(raw: String?): String {
         if (raw.isNullOrBlank()) return "-"
         val parts = raw.split(" ")
         if (parts.size < 2) return raw
-        val datePart = parts[0]              // yyyy-MM-dd
-        val timePart = parts[1]              // HH:mm:ss
+        val datePart = parts[0]
+        val timePart = parts[1]
         val dateTokens = datePart.split("-")
-        val mmdd = if (dateTokens.size == 3) {
-            "${dateTokens[1]}/${dateTokens[2]}" // 10/29
-        } else datePart
-        val hhmm = timePart.take(5)          // 09:30
+        val mmdd = if (dateTokens.size == 3) "${dateTokens[1]}/${dateTokens[2]}" else datePart
+        val hhmm = timePart.take(5)
         return "$mmdd $hhmm"
     }
+
+    private lateinit var sectionMain: View
+    private lateinit var btnMore: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_water_outage)
 
-        // 1) 取得上一層傳來的資料
-        val outage: WaterOutage? =
-            intent.getParcelableExtra("first_outage")
+        val outage: WaterOutage? = intent.getParcelableExtra("first_outage")
         val moreList: ArrayList<WaterOutage>? =
             intent.getParcelableArrayListExtra("more_outages")
 
-        // 2) 除錯用 Log
         Log.d(TAG, "===================== 收到資料 =====================")
         Log.d(TAG, "第一筆停水資料 (outage): $outage")
         Log.d(TAG, "更多公告列表 (moreList): $moreList")
         Log.d(TAG, "====================================================")
 
-        // 3) findViewById（這些 TextView 在 XML 已有大標題，這裡只塞內容）
         val tvTitle  = findViewById<TextView>(R.id.tv_title)
-        val tvReason = findViewById<TextView>(R.id.tv_reason)           // 只放「原因內容」
-        val tvTime   = findViewById<TextView>(R.id.tv_time)             // 只放「時間內容」
-
-        // 新版版面：分開顯示「停水區域 / 降壓區域」，各自有標題，無資料就隱藏
+        val tvReason = findViewById<TextView>(R.id.tv_reason)
+        val tvTime   = findViewById<TextView>(R.id.tv_time)
         val labelWater     = findViewById<TextView>(R.id.label_water_area)
         val tvWaterArea    = findViewById<TextView>(R.id.tv_water_area)
         val labelPressure  = findViewById<TextView>(R.id.label_pressure_area)
         val tvPressureArea = findViewById<TextView>(R.id.tv_pressure_area)
-        val tvAreaEmpty    = findViewById<TextView>(R.id.tv_area_empty) // 兩者皆無時顯示
+        val tvAreaEmpty    = findViewById<TextView>(R.id.tv_area_empty)
 
-        val btnMore  = findViewById<Button>(R.id.btn_more)
+        // 髮絲線分隔
+        val divAfterReason = findViewById<View>(R.id.div_after_reason)
+        val divAfterTime   = findViewById<View>(R.id.div_after_time)
+        val divAfterWater  = findViewById<View>(R.id.div_after_water)
 
-        // 4) 塞畫面資料
+        sectionMain = findViewById(R.id.section_main)
+        btnMore     = findViewById(R.id.btn_more)
+
+        // 確保兩個節點可聚焦（TV）
+        sectionMain.isFocusable = true
+        sectionMain.isFocusableInTouchMode = true
+        btnMore.isFocusable = true
+        btnMore.isFocusableInTouchMode = true
+
+        // 明確指定上下導焦目標（再保險一次）
+        sectionMain.nextFocusDownId = R.id.btn_more
+        btnMore.nextFocusUpId = R.id.section_main
+
+        // 進場先把焦點放到紅框（等 layout 完成後）
+        sectionMain.post { sectionMain.requestFocus() }
+
+        // --- 資料繫結 ---
         if (outage != null) {
-
-            // ---- A. 標題（統一用共用邏輯）----
             tvTitle.text = titleFor(outage)
 
-            // ---- B. 原因（只塞內容）----
             val reasonText = if (!outage.reason.isNullOrBlankOrLiteralNull())
-                outage.reason!!.trim()
-            else
-                "未提供"
+                outage.reason!!.trim() else "未提供"
             tvReason.text = reasonText
 
-            // ---- C. 影響時間（只塞內容）----
             val startPretty = shortenTime(outage.start_time)
             val endPretty   = shortenTime(outage.end_time)
             tvTime.text = if (startPretty != "-" || endPretty != "-")
                 "$startPretty ~ $endPretty" else "未提供"
 
-            // ---- D. 影響區域：分開顯示「停水」與「降壓」 ----
             val waterArea = outage.water_outage_areas
-                ?.takeUnless { it.isNullOrBlankOrLiteralNull() }
-                ?.trim()
+                ?.takeUnless { it.isNullOrBlankOrLiteralNull() }?.trim()
+            val pressureArea = outage.Buck_area
+                ?.takeUnless { it.isNullOrBlankOrLiteralNull() }?.trim()
 
-            val pressureArea = outage.Buck_area   // 注意：模型欄位 B 大寫
-                ?.takeUnless { it.isNullOrBlankOrLiteralNull() }
-                ?.trim()
-
-            // 停水區域
             if (waterArea != null) {
                 labelWater.visibility = View.VISIBLE
                 tvWaterArea.visibility = View.VISIBLE
@@ -123,7 +120,6 @@ class WaterOutageActivity : AppCompatActivity() {
                 tvWaterArea.visibility = View.GONE
             }
 
-            // 降壓區域
             if (pressureArea != null) {
                 labelPressure.visibility = View.VISIBLE
                 tvPressureArea.visibility = View.VISIBLE
@@ -133,24 +129,32 @@ class WaterOutageActivity : AppCompatActivity() {
                 tvPressureArea.visibility = View.GONE
             }
 
-            // 兩者都沒有 → 顯示備援訊息
             tvAreaEmpty.visibility =
                 if (waterArea == null && pressureArea == null) View.VISIBLE else View.GONE
 
+            // 髮絲線顯示邏輯
+            divAfterReason.visibility = View.VISIBLE
+            divAfterTime.visibility   = View.VISIBLE
+            divAfterWater.visibility  =
+                if (waterArea != null && pressureArea != null) View.VISIBLE else View.GONE
+
         } else {
-            // 無資料時的保底（只放內容，不含標題字樣）
             tvTitle.text  = "公告"
             tvReason.text = "未提供"
             tvTime.text   = "未提供"
-
             labelWater.visibility = View.GONE
             tvWaterArea.visibility = View.GONE
             labelPressure.visibility = View.GONE
             tvPressureArea.visibility = View.GONE
             tvAreaEmpty.visibility = View.VISIBLE
+
+            // 無資料時的分隔線：只保留前兩條
+            divAfterReason.visibility = View.VISIBLE
+            divAfterTime.visibility   = View.VISIBLE
+            divAfterWater.visibility  = View.GONE
         }
 
-        // 5) 更多公告按鈕
+        // 更多公告按鈕（只有有資料時才可聚焦）
         if (moreList.isNullOrEmpty()) {
             btnMore.isEnabled = false
             btnMore.alpha = 0.3f
@@ -164,5 +168,50 @@ class WaterOutageActivity : AppCompatActivity() {
                 overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
             }
         }
+
+        // ====== 核心：在 View 上直接攔鍵，保證上下切換 ======
+        sectionMain.setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+                Log.d(TAG, "DPAD_DOWN on sectionMain, try focus btnMore (enabled=${btnMore.isEnabled}, vis=${btnMore.visibility})")
+                if (btnMore.isEnabled && btnMore.visibility == View.VISIBLE) {
+                    btnMore.requestFocus()
+                    return@setOnKeyListener true
+                }
+            }
+            false
+        }
+        btnMore.setOnKeyListener { _, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DPAD_UP) {
+                Log.d(TAG, "DPAD_UP on btnMore, back to sectionMain")
+                sectionMain.requestFocus()
+                return@setOnKeyListener true
+            }
+            false
+        }
+        // ================================================
+    }
+
+    // 進一步保險：在 Activity 層也攔一次（避免被 ScrollView 吃掉）
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        val focusedId = currentFocus?.id
+        when (keyCode) {
+            KeyEvent.KEYCODE_DPAD_DOWN -> {
+                if (focusedId == R.id.section_main &&
+                    btnMore.isEnabled && btnMore.visibility == View.VISIBLE
+                ) {
+                    Log.d(TAG, "onKeyDown DOWN: force focus btnMore")
+                    btnMore.requestFocus()
+                    return true
+                }
+            }
+            KeyEvent.KEYCODE_DPAD_UP -> {
+                if (focusedId == R.id.btn_more) {
+                    Log.d(TAG, "onKeyDown UP: back to sectionMain")
+                    sectionMain.requestFocus()
+                    return true
+                }
+            }
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }
