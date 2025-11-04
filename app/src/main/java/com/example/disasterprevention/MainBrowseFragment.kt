@@ -15,12 +15,16 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/**
+ * 舊版 Leanback 架構 Fragment，負責顯示地震資料。
+ * 已被 HomeActivity (RecyclerView 版本) 取代。
+ */
+@Deprecated("此類已由 HomeActivity 取代，不再使用。")
 class MainBrowseFragment : Fragment() {
 
     private lateinit var tvLatestInfo: TextView
     private lateinit var ivLatestImage: ImageView
     private lateinit var btnHistory: Button
-
     private val historyDataList = mutableListOf<Earthquake>()
 
     override fun onCreateView(
@@ -35,40 +39,35 @@ class MainBrowseFragment : Fragment() {
         ivLatestImage = view.findViewById(R.id.iv_latest_image)
         btnHistory = view.findViewById(R.id.btn_history)
 
-        // --- 放大縮小動畫效果 ---
+        // 放大縮小動畫效果
         btnHistory.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                v.animate().scaleX(1.1f).scaleY(1.1f).setDuration(150).start()
-            } else {
-                v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start()
-            }
+            if (hasFocus) v.animate().scaleX(1.1f).scaleY(1.1f).setDuration(150).start()
+            else v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).start()
         }
 
         btnHistory.setOnTouchListener { v, event ->
             when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    v.animate().scaleX(1.05f).scaleY(1.05f).setDuration(80).start()
-                }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                MotionEvent.ACTION_DOWN -> v.animate().scaleX(1.05f).scaleY(1.05f).setDuration(80).start()
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL ->
                     v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(100).start()
-                }
             }
             false
         }
 
-        // --- 點擊跳轉至歷史資料頁面 ---
+        // 點擊跳轉至歷史資料頁面
         btnHistory.setOnClickListener {
             val intent = Intent(requireContext(), HistoryActivity::class.java)
             intent.putParcelableArrayListExtra("historyList", ArrayList(historyDataList))
             startActivity(intent)
         }
+
         view.findViewById<View>(R.id.container_latest).requestFocus()
         fetchEarthquakeData()
     }
 
     private fun fetchEarthquakeData() {
         val apiService = RetrofitClient.instance
-        apiService.getEarthquakes(6).enqueue(object : Callback<EarthquakeResponse> {
+        apiService.getEarthquakesLegacy(6).enqueue(object : Callback<EarthquakeResponse> {
             override fun onResponse(
                 call: Call<EarthquakeResponse>,
                 response: Response<EarthquakeResponse>

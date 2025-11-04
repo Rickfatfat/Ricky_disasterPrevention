@@ -18,11 +18,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.DisasterPrevention"
-        android:usesCleartextTraffic="true">   <!-- 如果 API 是 HTTP 而不是 HTTPS -->
+        android:usesCleartextTraffic="true">
 
-        <!-- TV  Banner -->
-        <!-- android:banner="@drawable/app_banner" -->
-
+        <!-- 新版主畫面 (RecyclerView 架構) -->
         <activity
             android:name=".HomeActivity"
             android:banner="@drawable/ic_launcher_background"
@@ -30,30 +28,23 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <!-- 可同時支援手機模擬器 -->
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!-- 舊版主畫面，已不啟動 -->
         <activity
             android:name=".MainActivity"
-            android:exported="true" />
+            android:exported="false" />
 
-        <activity
-            android:name=".HistoryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".DetailsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".PlaybackActivity"
-            android:exported="false" />
-        <activity
-            android:name=".BrowseErrorActivity"
-            android:exported="false" />
-        <activity
-            android:name=".LatestDetailActivity"
-            android:exported="true" />
+        <activity android:name=".HistoryActivity" android:exported="false" />
+        <activity android:name=".DetailsActivity" android:exported="false" />
+        <activity android:name=".PlaybackActivity" android:exported="false" />
+        <activity android:name=".BrowseErrorActivity" android:exported="false" />
+        <activity android:name=".LatestDetailActivity" android:exported="true" />
+        <activity android:name=".WeatherDetailActivity" android:exported="false" />
 
     </application>
 
 </manifest>
-

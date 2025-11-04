@@ -14,6 +14,7 @@
     <string name="movie">Movie</string>
     <string name="latest_quake_image">最新地震示意圖</string>
     <string name="shakemap_image">地震搖晃圖</string>
+    <string name="icon_desc">icon</string>
     <!-- Error messages -->
     <string name="error_fragment_message">An error occurred</string>
     <string name="dismiss_error">Dismiss</string>

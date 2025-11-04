@@ -1,27 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
 <MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:motion="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <Transition
-        motion:constraintSetStart="@id/start"
-        motion:constraintSetEnd="@id/end"
-        motion:duration="4000"
-        motion:autoTransition="animateToEnd"
-        motion:motionInterpolator="easeInOut">
-        <OnSwipe motion:dragDirection="dragUp" />
-    </Transition>
+        app:constraintSetStart="@id/start"
+        app:constraintSetEnd="@id/end"
+        app:duration="3000"
+        app:autoTransition="animateToEnd"
+        app:motionInterpolator="easeInOut" />
 
     <ConstraintSet android:id="@+id/start">
-        <Constraint android:id="@id/lottieWeather"
+        <Constraint
+            android:id="@id/lottieWeather"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            android:translationY="0dp" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
-        <Constraint android:id="@id/lottieWeather"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            motion:translationY="-10dp" />
+        <Constraint
+            android:id="@id/lottieWeather"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:translationY="-12dp" />
     </ConstraintSet>
 </MotionScene>

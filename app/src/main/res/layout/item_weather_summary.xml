@@ -1,60 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:id="@+id/weatherCard"
-android:layout_width="match_parent"
-android:layout_height="180dp"
-app:layoutDescription="@xml/weather_card_motion_scene"
-android:background="@drawable/bg_weather_gradient"
-android:clipToOutline="true"
-android:elevation="6dp"
-android:radius="16dp">
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_weather_summary"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="8dp"
+    app:cardUseCompatPadding="true"
+    android:clipToOutline="true"
+    android:outlineProvider="background"
+    android:layout_margin="16dp">
 
-<com.airbnb.lottie.LottieAnimationView
-    android:id="@+id/lottieWeather"
-    android:layout_width="120dp"
-    android:layout_height="120dp"
-    app:lottie_autoPlay="true"
-    app:lottie_loop="true"
-    app:lottie_rawRes="@raw/sunny"  <!-- 根據天氣換動畫 -->
-app:layout_constraintTop_toTopOf="parent"
-app:layout_constraintStart_toStartOf="parent"
-app:layout_constraintBottom_toBottomOf="parent"
-app:layout_constraintVertical_bias="0.5"/>
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/weatherCard"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/weather_card_motion_scene"
+        android:background="@drawable/bg_weather_card_day"
+        android:clipToOutline="true"
+        android:outlineProvider="background">
 
-<TextView
-    android:id="@+id/tvLocation"
-    android:text="大里區"
-    android:textSize="20sp"
-    android:textColor="@color/white"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintVertical_bias="0.2"/>
+        <!-- 天氣動畫 -->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieWeather"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/sunny"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.5" />
 
-<TextView
-    android:id="@+id/tvTemp"
-    android:text="31° / 22°"
-    android:textSize="32sp"
-    android:textColor="@color/white"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    app:layout_constraintTop_toBottomOf="@id/tvLocation"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"/>
+        <!-- 地點 -->
+        <TextView
+            android:id="@+id/tvLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="大里區"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_bias="0.2" />
 
-<TextView
-    android:id="@+id/tvAdvice"
-    android:text="天氣穩定，適合外出活動"
-    android:textSize="16sp"
-    android:textColor="@color/white"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    app:layout_constraintTop_toBottomOf="@id/tvTemp"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"/>
+        <!-- 溫度 -->
+        <TextView
+            android:id="@+id/tvTemp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="31° / 22°"
+            android:textColor="@android:color/white"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/tvLocation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+        <!-- 建議 -->
+        <TextView
+            android:id="@+id/tvAdvice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="天氣穩定，適合外出活動"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@id/tvTemp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+</androidx.cardview.widget.CardView>

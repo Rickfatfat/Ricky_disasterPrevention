@@ -61,7 +61,7 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun fetchEarthquakeData() {
-        RetrofitClient.instance.getEarthquakes().enqueue(object : Callback<EarthquakeResponse> {
+        RetrofitClient.instance.getEarthquakesLegacy().enqueue(object : Callback<EarthquakeResponse> {
             override fun onResponse(call: Call<EarthquakeResponse>, response: Response<EarthquakeResponse>) {
                 if (response.isSuccessful) {
                     val quakes = response.body()?.data ?: emptyList()
