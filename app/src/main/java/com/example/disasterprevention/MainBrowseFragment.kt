@@ -25,21 +25,17 @@ class MainBrowseFragment : Fragment() {
     private lateinit var tvLatestInfo: TextView
     private lateinit var ivLatestImage: ImageView
     private lateinit var btnHistory: Button
-    private val historyDataList = mutableListOf<Earthquake>()
 
-    // ===== 新增：停水 / 降壓 區塊 =====
-    private lateinit var tvWaterHeader: TextView
-    private lateinit var rvWater: RecyclerView
-    private lateinit var waterAdapter: WaterOutageAdapter
-    private val waterList = mutableListOf<WaterOutage>()
+    private val historyDataList = mutableListOf<Earthquake>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_main_browse, container, false)
+    ): View? {
+        return inflater.inflate(R.layout.fragment_main_browse, container, false)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // ---- 地震區塊 ----
         tvLatestInfo = view.findViewById(R.id.tv_latest_info)
         ivLatestImage = view.findViewById(R.id.iv_latest_image)
         btnHistory = view.findViewById(R.id.btn_history)
