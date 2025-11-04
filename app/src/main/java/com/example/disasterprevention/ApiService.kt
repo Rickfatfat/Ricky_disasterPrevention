@@ -33,4 +33,7 @@ interface ApiService {
     fun getEarthquakesLegacy(
         @Query("limit") limit: Int = 5
     ): Call<EarthquakeResponse>
+
+    @GET("api/v1/heavy_rain/") // <-- 使用你提供的正確端點
+    fun getHeavyRainAlerts(): Call<Heavy_Rain_Response>
 }

@@ -28,6 +28,7 @@ class HomeActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         addWeatherCard()
+        addHeavyRainCard()
         addEarthquakeCard()
     }
 
@@ -139,4 +140,143 @@ class HomeActivity : AppCompatActivity() {
             }
         }
     }
+
+    /** 豪雨特報 **/
+    private fun addHeavyRainCard() {
+        // --- 模擬模式開關 ---
+        val mockStatus = 0 // 0 = 真實API, 1~3 = 模擬情境
+
+        if (mockStatus > 0) {
+            println("🌧️ Running in Mock Mode: $mockStatus")
+
+            val fakeAlert: Heavy_Rain_Alert? = when (mockStatus) {
+                1 -> Heavy_Rain_Alert(
+                    headline = "豪雨特報",
+                    description = "受強烈對流雲系發展影響，今日臺中市有局部大雨或豪雨發生的機率。",
+                    effectiveTime = "2025-10-30T14:30:00+08:00",
+                    expiresTime = "2025-10-30T20:00:00+08:00",
+                    severity = "Severe",
+                    areaDesc = "臺中市",
+                    urgency = "Immediate"
+                )
+                2 -> Heavy_Rain_Alert(
+                    headline = "解除大雨特報",
+                    description = "降雨趨緩，解除大雨特報。",
+                    effectiveTime = "2025-10-30T13:00:00+08:00",
+                    expiresTime = "2025-10-30T14:00:00+08:00",
+                    severity = "Minor",
+                    areaDesc = "臺中市",
+                    urgency = "Past"
+                )
+                else -> null
+            }
+
+            var cardTitle = "豪雨特報"
+            var cardSubtitle = "目前沒有豪大雨特報"
+            var alertStatus = 0
+
+            if (fakeAlert != null) {
+                val headline = fakeAlert.headline
+                if (headline.contains("特報") && !headline.contains("解除")) {
+                    alertStatus = 1
+                    cardTitle = headline
+                    val expiresTime = fakeAlert.expiresTime.split("T").getOrNull(1)?.substring(0, 5) ?: ""
+                    cardSubtitle = "即將到來\n預計時間：$expiresTime"
+                } else if (headline.contains("解除")) {
+                    alertStatus = 2
+                    cardTitle = "豪雨特報"
+                    cardSubtitle = headline
+                }
+            }
+
+            val item = CardItem(
+                title = cardTitle,
+                subtitle = cardSubtitle,
+                backgroundColor = when (alertStatus) {
+                    1 -> Color.parseColor("#cc5f5a") // 生效中
+                    2 -> Color.parseColor("#678f74") // 已解除
+                    else -> Color.parseColor("#004B97") // 無特報
+                },
+                titleColor = Color.WHITE,
+                subtitleColor = Color.WHITE,
+                iconResId = R.drawable.heavyrain,
+                onClick = {
+                    val intent = Intent(this@HomeActivity, HeavyRainAlertActivity::class.java)
+                    if (alertStatus > 0) {
+                        intent.putExtra("heavy_rain_alert_data", fakeAlert)
+                    }
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
+                }
+            )
+            cardItems.add(item)
+            adapter.notifyItemInserted(cardItems.size - 1)
+            return
+        }
+
+        // --- 真實 API ---
+        RetrofitClient.instance.getHeavyRainAlerts()
+            .enqueue(object : retrofit2.Callback<Heavy_Rain_Response> {
+                override fun onResponse(
+                    call: retrofit2.Call<Heavy_Rain_Response>,
+                    response: retrofit2.Response<Heavy_Rain_Response>
+                ) {
+                    val latestAlert = response.body()?.data?.firstOrNull()
+                    var cardTitle = "豪雨特報"
+                    var cardSubtitle = "目前沒有豪大雨特報"
+                    var alertStatus = 0
+
+                    if (latestAlert != null) {
+                        val headline = latestAlert.headline
+                        if (headline.contains("特報") && !headline.contains("解除")) {
+                            alertStatus = 1
+                            cardTitle = headline
+                            val expiresTime = latestAlert.expiresTime.split("T").getOrNull(1)?.substring(0, 5) ?: ""
+                            cardSubtitle = "即將到來\n預計時間：$expiresTime"
+                        } else if (headline.contains("解除")) {
+                            alertStatus = 2
+                            cardSubtitle = headline
+                        }
+                    }
+
+                    val item = CardItem(
+                        title = cardTitle,
+                        subtitle = cardSubtitle,
+                        backgroundColor = Color.parseColor("#4682B4"),
+                        titleColor = Color.WHITE,
+                        subtitleColor = Color.WHITE,
+                        iconResId = R.drawable.heavyrain,
+                        onClick = {
+                            val intent = Intent(this@HomeActivity, HeavyRainAlertActivity::class.java)
+                            if (alertStatus > 0 && latestAlert != null) {
+                                intent.putExtra("heavy_rain_alert_data", latestAlert)
+                            }
+                            startActivity(intent)
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
+                        }
+                    )
+                    cardItems.add(item)
+                    adapter.notifyItemInserted(cardItems.size - 1)
+                }
+
+                override fun onFailure(call: retrofit2.Call<Heavy_Rain_Response>, t: Throwable) {
+                    val item = CardItem(
+                        title = "豪雨特報",
+                        subtitle = "資料取得失敗",
+                        backgroundColor = Color.parseColor("#4682B4"),
+                        titleColor = Color.WHITE,
+                        subtitleColor = Color.WHITE,
+                        iconResId = R.drawable.heavyrain,
+                        onClick = {
+                            val intent = Intent(this@HomeActivity, HeavyRainAlertActivity::class.java)
+                            startActivity(intent)
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
+                        }
+                    )
+                    cardItems.add(item)
+                    adapter.notifyItemInserted(cardItems.size - 1)
+                }
+            })
+    }
+
 }

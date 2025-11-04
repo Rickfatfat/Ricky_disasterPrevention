@@ -44,6 +44,7 @@
         <activity android:name=".BrowseErrorActivity" android:exported="false" />
         <activity android:name=".LatestDetailActivity" android:exported="true" />
         <activity android:name=".WeatherDetailActivity" android:exported="false" />
+        <activity android:name=".HeavyRainAlertActivity" android:exported="false" />
 
     </application>
 

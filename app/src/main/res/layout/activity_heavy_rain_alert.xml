@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_heavyrain_gradient"
+    android:fillViewport="true"
+    tools:context=".HeavyRainAlertActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <!-- ====================================================== -->
+        <!--         🌧️ Lottie 雨動畫 (固定在上方，裝飾用途)            -->
+        <!-- ====================================================== -->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_heavy_rain"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/storm"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- ====================================================== -->
+        <!--            區塊一：生效中警報的詳細內容 (預設隱藏)         -->
+        <!-- ====================================================== -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layout_alert_details"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="8dp"
+            android:backgroundTint="#1E1E1E"
+            app:layout_constraintTop_toBottomOf="@id/lottie_heavy_rain"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="28dp"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/tv_alert_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="豪雨特報"
+                    android:textColor="#FFFFFF"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center" />
+
+                <View
+                    android:layout_width="60dp"
+                    android:layout_height="3dp"
+                    android:background="#F2CB05"
+                    android:layout_marginBottom="24dp" />
+
+                <TextView
+                    android:id="@+id/tv_alert_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="6dp"
+                    android:textColor="#EAEAEA"
+                    android:textSize="20sp"
+                    android:textAlignment="center"
+                    tools:text="受強烈對流雲系影響，今日臺中市有局部大雨或豪雨發生的機率。" />
+
+                <TextView
+                    android:id="@+id/tv_alert_effective"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:textColor="#BBBBBB"
+                    android:textSize="18sp"
+                    android:text="預計開始時間：" />
+
+                <TextView
+                    android:id="@+id/tv_alert_expires"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:textColor="#BBBBBB"
+                    android:textSize="18sp"
+                    android:text="預計結束時間：" />
+
+                <TextView
+                    android:id="@+id/tv_alert_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:textColor="#BBBBBB"
+                    android:textSize="18sp"
+                    android:text="影響區域：" />
+
+                <Button
+                    android:id="@+id/btn_to_weather_alert"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28dp"
+                    android:text="查看天氣資訊"
+                    android:textSize="18sp"
+                    android:textColor="#000000"
+                    android:backgroundTint="#F2CB05"
+                    android:stateListAnimator="@null"
+                    android:elevation="0dp"
+                    android:paddingHorizontal="32dp"
+                    android:paddingVertical="10dp"
+                    android:layout_gravity="center" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ====================================================== -->
+        <!--      區塊二：無警報或已解除時的內容 (預設在中間)         -->
+        <!-- ====================================================== -->
+        <LinearLayout
+            android:id="@+id/layout_no_alert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/lottie_heavy_rain"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_no_alert_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:lineSpacingExtra="8dp"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                tools:text="今天是個好天氣 ☀️" />
+
+            <Button
+                android:id="@+id/btn_to_weather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="查看天氣資訊"
+                android:textSize="18sp"
+                android:textColor="#000000"
+                android:backgroundTint="#F2CB05"
+                android:stateListAnimator="@null"
+                android:elevation="0dp"
+                android:paddingHorizontal="32dp"
+                android:paddingVertical="10dp" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

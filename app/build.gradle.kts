@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.parcelize")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -63,6 +64,7 @@ dependencies {
     implementation("com.airbnb.android:lottie:6.3.0")
     implementation("com.airbnb.android:lottie:6.4.0")
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation(libs.androidx.activity)
 
 
 
