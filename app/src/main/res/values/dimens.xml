@@ -11,16 +11,16 @@
 
 
         <!-- 三個區塊之間的固定間距（全部一致） -->
-        <dimen name="section_spacing">20dp</dimen>
+    <dimen name="section_spacing">20dp</dimen>
 
         <!-- 區塊標題（原因 / 影響時間 / 降壓區域）的字級 -->
-        <dimen name="section_title_size">20sp</dimen>
+    <dimen name="section_title_size">20sp</dimen>
 
         <!-- 區塊內容的字級 -->
-        <dimen name="section_body_size">18sp</dimen>
+    <dimen name="section_body_size">18sp</dimen>
 
         <!-- 內文行距，讓段落更好讀 -->
-        <dimen name="section_body_line_space">6dp</dimen>
-
+    <dimen name="section_body_line_space">6dp</dimen>
+    <dimen name="title_icon_size">48dp</dimen>
 
 </resources>

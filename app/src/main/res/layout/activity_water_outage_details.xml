@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
@@ -10,132 +11,188 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- 頁面主標題（Kotlin 會依資料改成：停水 / 降壓 / 停水及降壓 / 最新公告） -->
-        <TextView
-            android:id="@+id/tv_title"
+        <!-- 標題列：icon + 文字 -->
+        <LinearLayout
+            android:id="@+id/header_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="停水資訊"
-            android:textColor="#FFFFFF"
-            android:textSize="48sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
 
-        <!-- ===== 區塊 1：原因 ===== -->
+            <ImageView
+                android:id="@+id/iv_title_icon"
+                android:layout_width="@dimen/title_icon_size"
+                android:layout_height="@dimen/title_icon_size"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/wateroutage"
+                app:tint="#A0D8F2"
+                android:contentDescription="@string/cd_wateroutage_icon"/>
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="停水資訊"
+                android:textColor="#FFFFFF"
+                android:textSize="48sp"
+                android:textStyle="bold"
+                android:includeFontPadding="false"/>
+        </LinearLayout>
+
+        <!-- ★ 只用外層 Divider 畫線；子區塊不再任何畫線或背景線 -->
         <LinearLayout
+            android:id="@+id/sections_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="24dp">
+            android:showDividers="middle"
+            android:divider="@drawable/divider_hairline"
+            android:dividerPadding="0dp">
+
+        <!-- 區塊 1：原因 -->
+        <LinearLayout
+            android:id="@+id/section_reason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="12dp">
 
             <TextView
                 android:id="@+id/tv_reason_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_section_label"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
                 android:text="原因："
                 android:textColor="#FFFFFF"
                 android:textSize="22sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tv_reason"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="_"
                 android:textColor="#DADADA"
                 android:textSize="20sp"
-                android:lineSpacingExtra="6dp" />
+                android:lineSpacingExtra="6dp"
+                android:includeFontPadding="false"/>
         </LinearLayout>
 
-        <!-- ===== 區塊 2：影響時間 ===== -->
+        <!-- 區塊 2：影響時間 -->
         <LinearLayout
+            android:id="@+id/section_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="24dp">
+            android:paddingTop="16dp"
+            android:paddingBottom="12dp">
 
             <TextView
                 android:id="@+id/tv_time_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_section_label"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
                 android:text="影響時間："
                 android:textColor="#FFFFFF"
                 android:textSize="22sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tv_time"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="_"
                 android:textColor="#DADADA"
                 android:textSize="20sp"
-                android:lineSpacingExtra="6dp" />
+                android:lineSpacingExtra="6dp"
+                android:includeFontPadding="false"/>
         </LinearLayout>
 
-        <!-- ===== 區塊 3：影響區域（分開顯示） ===== -->
-        <!-- 停水區域 -->
+        <!-- 區塊 3A：停水區域 -->
         <LinearLayout
+            android:id="@+id/section_water"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="24dp">
+            android:paddingTop="16dp"
+            android:paddingBottom="12dp">
 
             <TextView
                 android:id="@+id/label_water_area"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_section_label"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
                 android:text="停水區域："
                 android:textColor="#FFFFFF"
                 android:textSize="22sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tv_water_area"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="_"
                 android:textColor="#DADADA"
                 android:textSize="20sp"
-                android:lineSpacingExtra="6dp" />
+                android:lineSpacingExtra="6dp"
+                android:includeFontPadding="false"/>
         </LinearLayout>
 
-        <!-- 降壓區域 -->
+        <!-- 區塊 3B：降壓區域 -->
         <LinearLayout
+            android:id="@+id/section_pressure"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="16dp">
+            android:paddingTop="16dp"
+            android:paddingBottom="12dp">
 
             <TextView
                 android:id="@+id/label_pressure_area"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/bg_section_label"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
                 android:text="降壓區域："
                 android:textColor="#FFFFFF"
                 android:textSize="22sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/tv_pressure_area"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="_"
                 android:textColor="#DADADA"
                 android:textSize="20sp"
-                android:lineSpacingExtra="6dp" />
+                android:lineSpacingExtra="6dp"
+                android:includeFontPadding="false"/>
         </LinearLayout>
-
-        <!-- 兩者都沒有時的備援提示 -->
-        <TextView
-            android:id="@+id/tv_area_empty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="影響區域：未提供"
-            android:textColor="#DADADA"
-            android:textSize="20sp"
-            android:visibility="gone" />
-
     </LinearLayout>
-</ScrollView>
+
+    <!-- 備援提示（在 Kotlin 端控制顯示） -->
+    <TextView
+        android:id="@+id/tv_area_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="影響區域：未提供"
+        android:textColor="#DADADA"
+        android:textSize="20sp"
+        android:lineSpacingExtra="6dp"
+        android:includeFontPadding="false"
+        android:visibility="gone"/>
+</LinearLayout>
+    </ScrollView>

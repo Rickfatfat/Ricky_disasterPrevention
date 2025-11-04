@@ -56,21 +56,21 @@ class WaterOutageMoreAdapter(
             val endStr   = item.end_time?.takeUnless { it.isNullOrBlankOrLiteralNull() } ?: "-"
             tvTime.text = "時間：$startStr ~ $endStr"
 
-            // 焦點放大動畫
+            // 焦點放大動畫 + 與文字顏色同步（依賴 selector）
             rootRow.setOnFocusChangeListener { v, hasFocus ->
                 v.animate().cancel()
-                if (hasFocus) {
-                    v.animate()
-                        .scaleX(1.07f)
-                        .scaleY(1.07f)
-                        .setDuration(120L)
-                        .setInterpolator(DecelerateInterpolator())
-                        .start()
-                } else {
-                    v.scaleX = 1f
-                    v.scaleY = 1f
-                }
+                v.isSelected = hasFocus // ★ 關鍵：觸發 @color/card_text_selector
+                val target = if (hasFocus) 1.07f else 1f
+                v.animate()
+                    .scaleX(target)
+                    .scaleY(target)
+                    .setDuration(120L)
+                    .setInterpolator(DecelerateInterpolator())
+                    .start()
             }
+
+            // ★ 初始綁定時，同步一次選取狀態（避免回收造成顏色不同步）
+            rootRow.isSelected = rootRow.isFocused
 
             // 點擊跳詳細
             rootRow.setOnClickListener { onItemClick(item) }

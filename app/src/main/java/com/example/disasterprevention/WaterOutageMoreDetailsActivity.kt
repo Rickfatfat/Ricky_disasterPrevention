@@ -52,17 +52,17 @@ class WaterOutageMoreDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_water_outage_details)
 
-        val tvTitle        = findViewById<TextView>(R.id.tv_title)
-        val tvReasonTitle  = findViewById<TextView>(R.id.tv_reason_title)     // 只是佔位，不需動態改
-        val tvReason       = findViewById<TextView>(R.id.tv_reason)
-        val tvTimeTitle    = findViewById<TextView>(R.id.tv_time_title)       // 只是佔位，不需動態改
-        val tvTime         = findViewById<TextView>(R.id.tv_time)
+        val tvTitle     = findViewById<TextView>(R.id.tv_title)
+        val tvReason    = findViewById<TextView>(R.id.tv_reason)
+        val tvTime      = findViewById<TextView>(R.id.tv_time)
 
-        val labelWater     = findViewById<TextView>(R.id.label_water_area)
-        val tvWaterArea    = findViewById<TextView>(R.id.tv_water_area)
-        val labelPressure  = findViewById<TextView>(R.id.label_pressure_area)
-        val tvPressureArea = findViewById<TextView>(R.id.tv_pressure_area)
-        val tvAreaEmpty    = findViewById<TextView>(R.id.tv_area_empty)
+        // 重點：抓「整個區塊容器」，用 GONE/ VISIBLE 控制，避免雙線
+        val sectionWater    = findViewById<View>(R.id.section_water)
+        val sectionPressure = findViewById<View>(R.id.section_pressure)
+
+        val tvWaterArea     = findViewById<TextView>(R.id.tv_water_area)
+        val tvPressureArea  = findViewById<TextView>(R.id.tv_pressure_area)
+        val tvAreaEmpty     = findViewById<TextView>(R.id.tv_area_empty)
 
         // 取資料（相容兩種 key）
         val outage: WaterOutage? =
@@ -70,13 +70,13 @@ class WaterOutageMoreDetailsActivity : AppCompatActivity() {
                 ?: intent.getParcelableExtra("first_outage")
 
         if (outage == null) {
-            tvTitle.text     = "公告"
-            tvReason.text    = "未提供"
-            tvTime.text      = "未提供"
-            labelWater.visibility = View.GONE
-            tvWaterArea.visibility = View.GONE
-            labelPressure.visibility = View.GONE
-            tvPressureArea.visibility = View.GONE
+            tvTitle.text  = "公告"
+            tvReason.text = "未提供"
+            tvTime.text   = "未提供"
+
+            // 兩區塊都隱藏，僅顯示備援
+            sectionWater.visibility = View.GONE
+            sectionPressure.visibility = View.GONE
             tvAreaEmpty.visibility = View.VISIBLE
             return
         }
@@ -84,42 +84,37 @@ class WaterOutageMoreDetailsActivity : AppCompatActivity() {
         // ---- 標題 ----
         tvTitle.text = titleFor(outage)
 
-        // ---- 原因（只塞內容）----
+        // ---- 原因 ----
         val reasonText = if (!outage.reason.isNullOrBlankOrLiteralNull())
             outage.reason!!.trim() else "未提供"
         tvReason.text = reasonText
 
-        // ---- 影響時間（只塞內容）----
+        // ---- 影響時間 ----
         val startPretty = shortenTime(outage.start_time)
         val endPretty   = shortenTime(outage.end_time)
         tvTime.text = if (startPretty != "-" || endPretty != "-")
             "$startPretty ~ $endPretty" else "未提供"
 
-        // ---- 影響區域（分開顯示）----
+        // ---- 區域（整個容器顯示/隱藏）----
         val waterArea = outage.water_outage_areas
             ?.takeUnless { it.isNullOrBlankOrLiteralNull() }
             ?.trim()
-
-        val pressureArea = outage.Buck_area        // 注意 B 大寫
+        val pressureArea = outage.Buck_area
             ?.takeUnless { it.isNullOrBlankOrLiteralNull() }
             ?.trim()
 
         if (waterArea != null) {
-            labelWater.visibility = View.VISIBLE
-            tvWaterArea.visibility = View.VISIBLE
+            sectionWater.visibility = View.VISIBLE
             tvWaterArea.text = waterArea
         } else {
-            labelWater.visibility = View.GONE
-            tvWaterArea.visibility = View.GONE
+            sectionWater.visibility = View.GONE
         }
 
         if (pressureArea != null) {
-            labelPressure.visibility = View.VISIBLE
-            tvPressureArea.visibility = View.VISIBLE
+            sectionPressure.visibility = View.VISIBLE
             tvPressureArea.text = pressureArea
         } else {
-            labelPressure.visibility = View.GONE
-            tvPressureArea.visibility = View.GONE
+            sectionPressure.visibility = View.GONE
         }
 
         // 兩者皆無 → 顯示備援

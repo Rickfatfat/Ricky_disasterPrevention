@@ -66,24 +66,25 @@
             android:nextFocusDown="@id/btn_more">
 
             <!-- 區塊 1：原因 -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="24dp">
+                android:layout_marginTop="0dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_reason_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="原因："
-                    android:textColor="#FFFFFF"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"
                     android:background="@drawable/bg_section_label"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="6dp"
-                    android:layout_marginBottom="8dp"/>
+                    android:text="原因："
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_reason"
@@ -91,10 +92,9 @@
                     android:layout_height="wrap_content"
                     android:text="_"
                     android:textColor="#DADADA"
-                    android:textSize="20sp"
-                    android:lineSpacingExtra="6dp"
-                    android:breakStrategy="balanced" />
+                    android:textSize="20sp" />
             </LinearLayout>
+
             <View
                 android:id="@+id/div_after_reason"
                 android:layout_width="match_parent"
