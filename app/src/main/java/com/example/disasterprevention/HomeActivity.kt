@@ -32,7 +32,7 @@ class HomeActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recycler_cards)
 
-        // ✅ FlexboxLayoutManager：每列三張、置中對齊
+        //  FlexboxLayoutManager：每列三張、置中對齊
         val layoutManager = FlexboxLayoutManager(this).apply {
             flexDirection = FlexDirection.ROW          // 橫向排列
             flexWrap = FlexWrap.WRAP                   // 超過三張換行
@@ -45,7 +45,7 @@ class HomeActivity : AppCompatActivity() {
         adapter = CardAdapter(cardItems)
         recyclerView.adapter = adapter
 
-        // ✅ 動態 padding（依螢幕大小）
+        // 動態 padding（依螢幕大小）
         recyclerView.post {
             val screenHeight = resources.displayMetrics.heightPixels
             val screenWidth = resources.displayMetrics.widthPixels
@@ -53,7 +53,7 @@ class HomeActivity : AppCompatActivity() {
             val paddingVertical = (screenHeight * 0.12).toInt()
             recyclerView.setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical)
 
-            // ✅ 預設聚焦第一張
+            //  預設聚焦第一張
             if (recyclerView.childCount > 0) {
                 recyclerView.getChildAt(0)?.requestFocus()
             }
