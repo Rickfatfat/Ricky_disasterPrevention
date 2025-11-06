@@ -23,6 +23,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DisasterPrevention"
         android:usesCleartextTraffic="true">
+        <meta-data
+            android:name="com.google.android.tv.banner"
+            android:resource="@drawable/app_banner" />
+
 
         <!--  啟動畫面（App 封面 / 首頁入口） -->
         <activity
