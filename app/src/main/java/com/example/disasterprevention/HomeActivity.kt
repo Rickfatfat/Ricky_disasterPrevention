@@ -3,22 +3,17 @@ package com.example.disasterprevention
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.flexbox.*
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import android.util.Log
-import com.google.android.flexbox.FlexDirection
-import com.google.android.flexbox.FlexWrap
-import com.google.android.flexbox.FlexboxLayoutManager
-import com.google.android.flexbox.JustifyContent
-import com.google.android.flexbox.AlignItems
-
 
 class HomeActivity : AppCompatActivity() {
 
@@ -32,20 +27,19 @@ class HomeActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.recycler_cards)
 
-        //  FlexboxLayoutManager：每列三張、置中對齊
+        // 置中對齊
         val layoutManager = FlexboxLayoutManager(this).apply {
-            flexDirection = FlexDirection.ROW          // 橫向排列
-            flexWrap = FlexWrap.WRAP                   // 超過三張換行
-            justifyContent = JustifyContent.CENTER     // 水平置中
-            alignItems = AlignItems.CENTER             // 垂直置中
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+            justifyContent = JustifyContent.CENTER
+            alignItems = AlignItems.CENTER
         }
         recyclerView.layoutManager = layoutManager
-
 
         adapter = CardAdapter(cardItems)
         recyclerView.adapter = adapter
 
-        // 動態 padding（依螢幕大小）
+        //  響應式 padding
         recyclerView.post {
             val screenHeight = resources.displayMetrics.heightPixels
             val screenWidth = resources.displayMetrics.widthPixels
@@ -53,18 +47,15 @@ class HomeActivity : AppCompatActivity() {
             val paddingVertical = (screenHeight * 0.12).toInt()
             recyclerView.setPadding(paddingHorizontal, paddingVertical, paddingHorizontal, paddingVertical)
 
-            //  預設聚焦第一張
-            if (recyclerView.childCount > 0) {
-                recyclerView.getChildAt(0)?.requestFocus()
-            }
+            if (recyclerView.childCount > 0) recyclerView.getChildAt(0)?.requestFocus()
         }
 
-        // 加入卡片
+        //  加入卡片
         addWeatherCard()
         addHeavyRainCard()
         addEarthquakeCard()
-        addWaterOutageCard()
-        addEarthquakeCard()
+        addPowerOutageCard()
+        addFloodCard()
         addWaterOutageCard()
     }
 
@@ -75,28 +66,15 @@ class HomeActivity : AppCompatActivity() {
                 val api = RetrofitClient.instance
                 val resp = api.getWeatherSummary(location = "大里區", days = 5)
 
-                // 用 API 回傳時間判斷白天或夜晚
-                val serverTime = resp.currentTime
-                val hour = serverTime.substringAfter("T").substringBefore(":").toIntOrNull() ?: 12
+                val hour = resp.currentTime.substringAfter("T").substringBefore(":").toIntOrNull() ?: 12
                 val isNight = hour >= 18 || hour < 6
-
-                // 取出今日資料
                 val todayDate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
-                val today = resp.dailySummary.find { it.date == todayDate }
-                    ?: resp.dailySummary.firstOrNull()
+                val today = resp.dailySummary.find { it.date == todayDate } ?: resp.dailySummary.firstOrNull()
 
                 if (today != null) {
-                    // 天氣動畫與背景
                     val animRes = WeatherArt.lottieByPrecip(today.precipitationProbability, isNight)
-                    val bgDrawable = WeatherArt.backgroundByCondition(
-                        today.precipitationProbability,
-                        today.weatherIcon,
-                        isNight
-                    )
-
-                    val subtitle = "最高溫：${today.maxTemperature}°\n" +
-                            "最低溫：${today.minTemperature}°\n" +
-                            "降雨機率：${today.precipitationProbability}%"
+                    val bgDrawable = WeatherArt.backgroundByCondition(today.precipitationProbability, today.weatherIcon, isNight)
+                    val subtitle = "最高溫：${today.maxTemperature}°\n最低溫：${today.minTemperature}°\n降雨機率：${today.precipitationProbability}%"
 
                     val item = CardItem(
                         title = "今日天氣",
@@ -116,19 +94,17 @@ class HomeActivity : AppCompatActivity() {
                     )
                     cardItems.add(0, item)
                     adapter.notifyItemInserted(0)
-                    recyclerView.scrollToPosition(0)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                val item = CardItem(
+                cardItems.add(CardItem(
                     title = "天氣資訊",
                     subtitle = "無法取得天氣資料",
                     backgroundResId = R.drawable.bg_weather_card_day,
                     titleColor = Color.WHITE,
                     subtitleColor = Color.WHITE,
                     iconResId = R.drawable.cloud
-                )
-                cardItems.add(0, item)
+                ))
                 adapter.notifyItemInserted(0)
             }
         }
@@ -141,10 +117,7 @@ class HomeActivity : AppCompatActivity() {
                 val api = RetrofitClient.instance
                 val response = api.getEarthquakes(1)
                 val latest = response.data.firstOrNull()
-
-                val subtitle = if (latest != null) {
-                    "最新震央：${latest.epicenter}\n規模：${latest.magnitude}"
-                } else "無法取得最新資料"
+                val subtitle = latest?.let { "最新震央：${it.epicenter}\n規模：${it.magnitude}" } ?: "無法取得最新資料"
 
                 val item = CardItem(
                     title = "地震資訊",
@@ -154,23 +127,21 @@ class HomeActivity : AppCompatActivity() {
                     subtitleColor = Color.parseColor("#191970"),
                     iconResId = R.drawable.earthquake,
                     onClick = {
-                        val intent = Intent(this@HomeActivity, MainActivity::class.java)
-                        startActivity(intent)
+                        startActivity(Intent(this@HomeActivity, MainActivity::class.java))
                         overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
                     }
                 )
                 cardItems.add(item)
                 adapter.notifyItemInserted(cardItems.size - 1)
             } catch (e: Exception) {
-                val item = CardItem(
+                cardItems.add(CardItem(
                     title = "地震資訊",
                     subtitle = "無法取得資料",
                     backgroundColor = Color.parseColor("#FAEBD7"),
                     titleColor = Color.parseColor("#191970"),
                     subtitleColor = Color.parseColor("#191970"),
                     iconResId = R.drawable.earthquake
-                )
-                cardItems.add(item)
+                ))
                 adapter.notifyItemInserted(cardItems.size - 1)
             }
         }
@@ -178,95 +149,20 @@ class HomeActivity : AppCompatActivity() {
 
     /** 豪雨特報 **/
     private fun addHeavyRainCard() {
-        // --- 模擬模式開關 ---
-        val mockStatus = 0 // 0 = 真實API, 1~3 = 模擬情境
-
-        if (mockStatus > 0) {
-            println("🌧️ Running in Mock Mode: $mockStatus")
-
-            val fakeAlert: Heavy_Rain_Alert? = when (mockStatus) {
-                1 -> Heavy_Rain_Alert(
-                    headline = "豪雨特報",
-                    description = "受強烈對流雲系發展影響，今日臺中市有局部大雨或豪雨發生的機率。",
-                    effectiveTime = "2025-10-30T14:30:00+08:00",
-                    expiresTime = "2025-10-30T20:00:00+08:00",
-                    severity = "Severe",
-                    areaDesc = "臺中市",
-                    urgency = "Immediate"
-                )
-                2 -> Heavy_Rain_Alert(
-                    headline = "解除大雨特報",
-                    description = "降雨趨緩，解除大雨特報。",
-                    effectiveTime = "2025-10-30T13:00:00+08:00",
-                    expiresTime = "2025-10-30T14:00:00+08:00",
-                    severity = "Minor",
-                    areaDesc = "臺中市",
-                    urgency = "Past"
-                )
-                else -> null
-            }
-
-            var cardTitle = "豪雨特報"
-            var cardSubtitle = "目前沒有豪大雨特報"
-            var alertStatus = 0
-
-            if (fakeAlert != null) {
-                val headline = fakeAlert.headline
-                if (headline.contains("特報") && !headline.contains("解除")) {
-                    alertStatus = 1
-                    cardTitle = headline
-                    val expiresTime = fakeAlert.expiresTime.split("T").getOrNull(1)?.substring(0, 5) ?: ""
-                    cardSubtitle = "即將到來\n預計時間：$expiresTime"
-                } else if (headline.contains("解除")) {
-                    alertStatus = 2
-                    cardTitle = "豪雨特報"
-                    cardSubtitle = headline
-                }
-            }
-
-            val item = CardItem(
-                title = cardTitle,
-                subtitle = cardSubtitle,
-                backgroundColor = when (alertStatus) {
-                    1 -> Color.parseColor("#cc5f5a") // 生效中
-                    2 -> Color.parseColor("#678f74") // 已解除
-                    else -> Color.parseColor("#004B97") // 無特報
-                },
-                titleColor = Color.WHITE,
-                subtitleColor = Color.WHITE,
-                iconResId = R.drawable.heavyrain,
-                onClick = {
-                    val intent = Intent(this@HomeActivity, HeavyRainAlertActivity::class.java)
-                    if (alertStatus > 0) {
-                        intent.putExtra("heavy_rain_alert_data", fakeAlert)
-                    }
-                    startActivity(intent)
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
-                }
-            )
-            cardItems.add(item)
-            adapter.notifyItemInserted(cardItems.size - 1)
-            return
-        }
-
-        // --- 真實 API ---
         RetrofitClient.instance.getHeavyRainAlerts()
-            .enqueue(object : retrofit2.Callback<Heavy_Rain_Response> {
-                override fun onResponse(
-                    call: retrofit2.Call<Heavy_Rain_Response>,
-                    response: retrofit2.Response<Heavy_Rain_Response>
-                ) {
-                    val latestAlert = response.body()?.data?.firstOrNull()
+            .enqueue(object : Callback<Heavy_Rain_Response> {
+                override fun onResponse(call: Call<Heavy_Rain_Response>, response: Response<Heavy_Rain_Response>) {
+                    val latest = response.body()?.data?.firstOrNull()
                     var cardTitle = "豪雨特報"
                     var cardSubtitle = "目前沒有豪大雨特報"
                     var alertStatus = 0
 
-                    if (latestAlert != null) {
-                        val headline = latestAlert.headline
+                    if (latest != null) {
+                        val headline = latest.headline
                         if (headline.contains("特報") && !headline.contains("解除")) {
                             alertStatus = 1
+                            val expiresTime = latest.expiresTime.split("T").getOrNull(1)?.substring(0, 5) ?: ""
                             cardTitle = headline
-                            val expiresTime = latestAlert.expiresTime.split("T").getOrNull(1)?.substring(0, 5) ?: ""
                             cardSubtitle = "即將到來\n預計時間：$expiresTime"
                         } else if (headline.contains("解除")) {
                             alertStatus = 2
@@ -283,9 +179,8 @@ class HomeActivity : AppCompatActivity() {
                         iconResId = R.drawable.heavyrain,
                         onClick = {
                             val intent = Intent(this@HomeActivity, HeavyRainAlertActivity::class.java)
-                            if (alertStatus > 0 && latestAlert != null) {
-                                intent.putExtra("heavy_rain_alert_data", latestAlert)
-                            }
+                            if (alertStatus > 0 && latest != null)
+                                intent.putExtra("heavy_rain_alert_data", latest)
                             startActivity(intent)
                             overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
                         }
@@ -294,86 +189,133 @@ class HomeActivity : AppCompatActivity() {
                     adapter.notifyItemInserted(cardItems.size - 1)
                 }
 
-                override fun onFailure(call: retrofit2.Call<Heavy_Rain_Response>, t: Throwable) {
-                    val item = CardItem(
+                override fun onFailure(call: Call<Heavy_Rain_Response>, t: Throwable) {
+                    cardItems.add(CardItem(
                         title = "豪雨特報",
                         subtitle = "資料取得失敗",
                         backgroundColor = Color.parseColor("#4682B4"),
                         titleColor = Color.WHITE,
                         subtitleColor = Color.WHITE,
-                        iconResId = R.drawable.heavyrain,
-                        onClick = {
-                            val intent = Intent(this@HomeActivity, HeavyRainAlertActivity::class.java)
-                            startActivity(intent)
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
-                        }
-                    )
-                    cardItems.add(item)
+                        iconResId = R.drawable.heavyrain
+                    ))
                     adapter.notifyItemInserted(cardItems.size - 1)
                 }
             })
     }
 
+    /** 停電資訊 **/
+    private fun addPowerOutageCard() {
+        lifecycleScope.launch {
+            try {
+                val api = RetrofitClient.instance
+//                val address = "台中市大里區國光路一段68號"
+                val address = "台中市北屯區南興路1050號"
+
+
+                val response = api.getPowerOutageInfo(address)
+                val affectedCount = response.affectedCount ?: 0
+
+                val subtitle: String
+                val backgroundColor: Int
+                if (affectedCount > 0) {
+                    subtitle = "您附近有 $affectedCount 件停電事件"
+                    backgroundColor = Color.parseColor("#F3B431")
+                } else {
+                    subtitle = "您的地區目前無停電"
+                    backgroundColor = Color.parseColor("#4C8A64")
+                }
+
+                val item = CardItem(
+                    title = "停電資訊",
+                    subtitle = subtitle,
+                    backgroundColor = backgroundColor,
+                    titleColor = Color.WHITE,
+                    subtitleColor = Color.WHITE,
+                    iconResId = R.drawable.poweroutage,
+                    onClick = {
+                        val intent = Intent(this@HomeActivity, PowerOutageDetailActivity::class.java)
+                        intent.putExtra("power_outage_data", response)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
+                    }
+                )
+                cardItems.add(item)
+                adapter.notifyItemInserted(cardItems.size - 1)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                cardItems.add(CardItem(
+                    title = "停電資訊",
+                    subtitle = "無法取得資料",
+                    backgroundColor = Color.GRAY,
+                    titleColor = Color.WHITE,
+                    subtitleColor = Color.WHITE,
+                    iconResId = R.drawable.poweroutage
+                ))
+                adapter.notifyItemInserted(cardItems.size - 1)
+            }
+        }
+    }
+
+    /** 淹水警報 **/
+    private fun addFloodCard() {
+        lifecycleScope.launch {
+            try {
+                val api = RetrofitClient.instance
+                val response = api.getFloodInfo()
+                val alertStationsCount = response.data.count { it.alertStatus != "正常" }
+                val hasAlert = alertStationsCount > 0
+                val subtitle = if (hasAlert)
+                    "有 $alertStationsCount 個測站水位過高"
+                else "各地區水位正常"
+
+                val backgroundColor = if (hasAlert)
+                    Color.parseColor("#E57373") else Color.parseColor("#66BB6A")
+
+                val item = CardItem(
+                    title = "淹水警報",
+                    subtitle = subtitle,
+                    backgroundColor = backgroundColor,
+                    titleColor = Color.WHITE,
+                    subtitleColor = Color.WHITE,
+                    iconResId = R.drawable.flood,
+                    onClick = {
+                        val intent = Intent(this@HomeActivity, FloodDetailActivity::class.java)
+                        intent.putExtra("flood_data", response)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
+                    }
+                )
+                cardItems.add(item)
+                adapter.notifyItemInserted(cardItems.size - 1)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                cardItems.add(CardItem(
+                    title = "淹水警報",
+                    subtitle = "無法取得資料",
+                    backgroundColor = Color.GRAY,
+                    titleColor = Color.WHITE,
+                    subtitleColor = Color.WHITE,
+                    iconResId = R.drawable.flood
+                ))
+                adapter.notifyItemInserted(cardItems.size - 1)
+            }
+        }
+    }
+
     /** 停水 **/
     private fun addWaterOutageCard() {
-        RetrofitClient.instance
-            .getWaterOutages(county = "台中市")
+        RetrofitClient.instance.getWaterOutages(county = "台中市")
             .enqueue(object : Callback<WaterOutagesResponse> {
-                override fun onResponse(
-                    call: Call<WaterOutagesResponse>,
-                    response: Response<WaterOutagesResponse>
-                ) {
-                    Log.d("WATER_DEBUG", "======== 停水 API 測試 ========")
-                    Log.d("WATER_DEBUG", "URL = ${response.raw().request.url}")
-                    Log.d("WATER_DEBUG", "Code = ${response.code()}")
-                    Log.d("WATER_DEBUG", "Body = ${response.body()}")
-                    Log.d("WATER_DEBUG", "=============================")
-                    val all: List<WaterOutage> = response.body()?.data ?: emptyList()
-                    val first: WaterOutage? = all.firstOrNull()
-                    val rest: List<WaterOutage> = if (all.size > 1) all.drop(1) else emptyList()
+                override fun onResponse(call: Call<WaterOutagesResponse>, response: Response<WaterOutagesResponse>) {
+                    Log.d("WATER_DEBUG", "Code=${response.code()}, Body=${response.body()}")
+                    val all = response.body()?.data ?: emptyList()
+                    val first = all.firstOrNull()
+                    val rest = if (all.size > 1) all.drop(1) else emptyList()
 
-                    // --- 濃縮原因 ---
-                    fun summarizeReason(fullReason: String?): String {
-                        if (fullReason.isNullOrBlank()) return "原因未提供"
-                        val keywordMap = linkedMapOf(
-                            "施工" to "管線施工",
-                            "工程" to "工程施工",
-                            "維修" to "管線維修",
-                            "搶修" to "緊急搶修",
-                            "修復" to "設備修復",
-                            "汰換" to "設備汰換",
-                            "改接" to "管線改接",
-                            "清洗" to "水池清洗",
-                            "新裝" to "新裝工程",
-                            "停電" to "配合停電"
-                        )
-                        for ((keyword, summary) in keywordMap) {
-                            if (fullReason.contains(keyword)) return summary
-                        }
-                        return fullReason.split("，", "。", "、", " ").firstOrNull() ?: fullReason
-                    }
-
-                    fun shortenTime(raw: String?): String {
-                        if (raw.isNullOrBlank()) return "-"
-                        val parts = raw.split(" ")
-                        if (parts.size < 2) return raw
-                        val datePart = parts[0]
-                        val timePart = parts[1]
-                        val dateTokens = datePart.split("-")
-                        val mmdd = if (dateTokens.size == 3) "${dateTokens[1]}/${dateTokens[2]}" else datePart
-                        val hhmm = timePart.substring(0, 5)
-                        return "$mmdd $hhmm"
-                    }
-
-                    val reason = summarizeReason(first?.reason)
-                    val startPretty = shortenTime(first?.start_time)
-                    val endPretty = shortenTime(first?.end_time)
-                    val subtitle = if (first != null) {
-                        "原因：$reason\n時間：$startPretty ~ $endPretty"
-                    } else "目前無台中市停水公告"
-
-                    val firstOutageForClick = first
-                    val restOutagesForClick = ArrayList(rest)
+                    val reason = first?.reason ?: "原因未提供"
+                    val subtitle = if (first != null)
+                        "原因：$reason\n時間：${first.start_time} ~ ${first.end_time}"
+                    else "目前無台中市停水公告"
 
                     val item = CardItem(
                         title = "停水資訊",
@@ -384,30 +326,27 @@ class HomeActivity : AppCompatActivity() {
                         iconResId = R.drawable.wateroutage_playstore,
                         onClick = {
                             val intent = Intent(this@HomeActivity, WaterOutageActivity::class.java)
-                            intent.putExtra("first_outage", firstOutageForClick)
-                            intent.putParcelableArrayListExtra("more_outages", restOutagesForClick)
+                            intent.putExtra("first_outage", first)
+                            intent.putParcelableArrayListExtra("more_outages", ArrayList(rest))
                             startActivity(intent)
                             overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
                         }
                     )
-
                     cardItems.add(item)
                     adapter.notifyItemInserted(cardItems.size - 1)
                 }
 
                 override fun onFailure(call: Call<WaterOutagesResponse>, t: Throwable) {
-                    val item = CardItem(
+                    cardItems.add(CardItem(
                         title = "停水資訊",
                         subtitle = "資料取得失敗",
                         backgroundColor = Color.parseColor("#e0f7fa"),
                         titleColor = Color.parseColor("#003b4a"),
                         subtitleColor = Color.parseColor("#003b4a"),
                         iconResId = R.drawable.wateroutage_playstore
-                    )
-                    cardItems.add(item)
+                    ))
                     adapter.notifyItemInserted(cardItems.size - 1)
                 }
             })
     }
-
 }

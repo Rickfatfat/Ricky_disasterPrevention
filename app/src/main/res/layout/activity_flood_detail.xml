@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 根佈局改為 FrameLayout 或 RelativeLayout，讓 ViewPager2 可以直接疊在上面佔滿全螢幕 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FloodDetailActivity">
+
+    <!-- 【關鍵修改】讓 ViewPager2 的寬高都佔滿父佈局 (match_parent) -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager_flood"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!--
+        【關鍵修改】原本顯示 "成功獲取..." 的 TextView 已經被完全移除了。
+        如果您未來還需要它，可以取消下面的註解，並將 visibility 設為 gone。
+    -->
+    <!--
+    <TextView
+        android:id="@+id/tv_flood_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:text="成功獲取水位資料" />
+    -->
+
+</FrameLayout>

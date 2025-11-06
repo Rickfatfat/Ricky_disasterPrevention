@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@drawable/bg_card_normal">
+
+    <!-- 最上面一行：測站名稱 -->
+    <TextView
+        android:id="@+id/item_tv_station_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="測站名稱"
+        android:textColor="@android:color/black"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/item_tv_alert_status"
+        android:layout_marginEnd="8dp"/>
+
+    <!-- 最上面一行：狀態 -->
+    <TextView
+        android:id="@+id/item_tv_alert_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="狀態：正常"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@id/item_tv_station_name" />
+
+    <!-- 右邊：圖片 -->
+
+    <!-- 左邊：目前水位 -->
+
+    <!-- 左邊：二級警戒 -->
+
+    <!-- 左邊：一級警戒 -->
+
+    <ImageView
+        android:id="@+id/item_iv_station_image"
+        android:layout_width="500dp"
+        android:layout_height="326dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:background="#e0e0e0"
+        android:contentDescription="測站即時影像"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_tv_station_name" />
+
+    <TextView
+        android:id="@+id/item_tv_current_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="44dp"
+        android:text="目前水位：0.0 m"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/item_iv_station_image" />
+
+    <TextView
+        android:id="@+id/item_tv_yellow_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="44dp"
+        android:text="二級警戒：1.8 m"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_tv_current_level" />
+
+    <TextView
+        android:id="@+id/item_tv_red_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="40dp"
+        android:text="一級警戒：2.4 m"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_tv_yellow_level" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

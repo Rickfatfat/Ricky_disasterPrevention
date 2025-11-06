@@ -18,4 +18,5 @@
     <!-- Error messages -->
     <string name="error_fragment_message">An error occurred</string>
     <string name="dismiss_error">Dismiss</string>
+    <string name="title_activity_power_outage_detail">PowerOutageDetailActivity</string>
 </resources>
