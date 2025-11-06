@@ -3,31 +3,40 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp"
-    android:layout_marginBottom="8dp"
-    android:background="@drawable/bg_card_normal">
+    android:padding="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="16dp"
+    android:background="@drawable/bg_outage_card"
+    android:elevation="8dp"
+    android:clipToOutline="true">
 
     <TextView
         android:id="@+id/item_tv_reason"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:textSize="17sp"
         android:textStyle="bold"
-        android:text="原因：(新增設工程)短暫停電" />
+        android:textColor="#FFFFFF"
+        android:text="原因：(管線遷移工程)短暫停電" />
 
     <TextView
         android:id="@+id/item_tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="時間：114 年 11 月 05 日 自 8 時 30 分至 8 時 45 分" />
+        android:textColor="#E6E6E6"
+        android:textSize="15sp"
+        android:text="時間：114 年 11 月 06 日 自 8 時 30 分至 8 時 45 分" />
 
     <TextView
         android:id="@+id/item_tv_area"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="影響範圍：台中市烏日區三榮十七路..."
+        android:textColor="#CCCCCC"
+        android:textSize="14sp"
+        android:lineSpacingExtra="3dp"
         android:maxLines="5"
-        android:ellipsize="end"/>
+        android:ellipsize="end"
+        android:text="影響範圍：台中市北屯區文北段 38 地號 ..." />
 </LinearLayout>

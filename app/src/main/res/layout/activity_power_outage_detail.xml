@@ -1,84 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:background="#2C3E50"
-    android:padding="16dp"
+    android:background="@drawable/bg_heavyrain_gradient"
+    android:padding="24dp"
     tools:context=".PowerOutageDetailActivity">
 
-    <!-- (A) 有停電資料時顯示的區塊 -->
-    <LinearLayout
-        android:id="@+id/layout_has_data"
+    <ScrollView
+        android:id="@+id/scroll_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:scrollbars="vertical">
 
-        <TextView
-            android:id="@+id/tv_summary_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="停電影響摘要"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tv_summary_content"
+        <LinearLayout
+            android:id="@+id/layout_has_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textColor="#E0E0E0"
-            android:textSize="18sp"
-            tools:text="您的地址可能受到 2 個停電事件影響" />
+            android:orientation="vertical"
+            android:paddingBottom="40dp"
+            tools:visibility="visible">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="#4A6572" />
+            <TextView
+                android:id="@+id/tv_summary_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="停電影響摘要"
+                android:textColor="#FFFFFF"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:shadowColor="#80000000"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="3" />
 
-        <TextView
-            android:id="@+id/tv_details_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="詳細事件列表"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tv_summary_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="#EAEAEA"
+                android:textSize="18sp"
+                tools:text="您的地址可能受到 2 個停電事件影響" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_outage_details"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="#66FFFFFF" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_details_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="詳細事件列表"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
-    <!-- (B) 沒有停電資料時顯示的區塊 (預設隱藏) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_outage_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="false"
+                android:paddingBottom="40dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- 無資料畫面 -->
     <LinearLayout
         android:id="@+id/layout_no_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone"
-        tools:visibility="gone">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_no_data_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="您的地區目前沒有停電資訊"
-            android:textColor="#BDC3C7"
+            android:textColor="#F0F0F0"
             android:textSize="22sp"
             android:textStyle="bold" />
 
@@ -87,15 +99,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:backgroundTint="#3498DB"
+            android:backgroundTint="#F2CB05"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
             android:text="返回主畫面"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
     </LinearLayout>
 
-</RelativeLayout>
+</FrameLayout>

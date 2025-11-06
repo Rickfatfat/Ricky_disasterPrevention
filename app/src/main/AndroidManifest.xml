@@ -16,11 +16,31 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher_background"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:banner="@drawable/app_banner"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.DisasterPrevention"
         android:usesCleartextTraffic="true">
+
+        <!--  啟動畫面（App 封面 / 首頁入口） -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.DisasterPrevention.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--  主畫面（由 SplashActivity 跳轉進來） -->
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false"
+            android:banner="@mipmap/ic_launcher" />
 
         <!-- 洪水警報詳情 -->
         <activity
@@ -34,23 +54,10 @@
             android:label="@string/title_activity_power_outage_detail"
             android:theme="@style/Theme.DisasterPrevention" />
 
-        <!-- 新版主畫面 (RecyclerView 架構) -->
-        <activity
-            android:name=".HomeActivity"
-            android:banner="@drawable/ic_launcher_background"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
-                <!-- 可同時支援手機模擬器 -->
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
         <!-- 舊版主畫面，已不啟動 -->
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
+        <activity android:name=".MainActivity" android:exported="false" />
+
+        <!-- 其他頁面 -->
         <activity android:name=".HistoryActivity" android:exported="false" />
         <activity android:name=".DetailsActivity" android:exported="false" />
         <activity android:name=".PlaybackActivity" android:exported="false" />
@@ -62,6 +69,6 @@
         <activity android:name=".WaterOutageDetailsActivity" android:exported="false" />
         <activity android:name=".WaterOutageMoreActivity" android:exported="false" />
         <activity android:name=".WaterOutageMoreDetailsActivity" android:exported="false" />
-    </application>
 
+    </application>
 </manifest>
