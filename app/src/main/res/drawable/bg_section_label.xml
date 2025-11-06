@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <!-- 只留淡藍底，不要描邊 -->
+    <solid android:color="@color/water_chip_bg_20"/>
+
+    <!-- 依你版面風格做圓角 -->
+    <corners android:radius="10dp"/>
+
+    <!-- 可視需要加內距；若你已在 TextView 上設 padding 就可刪掉這段 -->
+    <!-- <padding android:left="12dp" android:top="6dp" android:right="12dp" android:bottom="6dp"/> -->
+</shape>

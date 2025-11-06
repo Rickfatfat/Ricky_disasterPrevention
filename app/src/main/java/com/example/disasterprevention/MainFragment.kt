@@ -40,7 +40,11 @@ class MainFragment : BrowseSupportFragment() {
         rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
         adapter = rowsAdapter
 
+        // 地震資料
         fetchEarthquakeData()
+        // 停水資料
+        fetchWaterOutages()
+
         setupEventListeners()
     }
 
@@ -53,13 +57,14 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun setupUIElements() {
-        title = "地震資訊"
+        title = "災防資訊"
         headersState = HEADERS_ENABLED
         isHeadersTransitionOnBackEnabled = true
         brandColor = ContextCompat.getColor(requireContext(), R.color.fastlane_background)
         searchAffordanceColor = ContextCompat.getColor(requireContext(), R.color.search_opaque)
     }
 
+    /** 地震 **/
     private fun fetchEarthquakeData() {
         RetrofitClient.instance.getEarthquakesLegacy().enqueue(object : Callback<EarthquakeResponse> {
             override fun onResponse(call: Call<EarthquakeResponse>, response: Response<EarthquakeResponse>) {
@@ -86,24 +91,53 @@ class MainFragment : BrowseSupportFragment() {
             latest.shakemap_url ?: "https://你的API圖片網址.jpg"
         )
         listRowAdapter.add(latestCard)
-
-        val header = HeaderItem(0, "最新地震")
-        rowsAdapter.add(ListRow(header, listRowAdapter))
+        rowsAdapter.add(ListRow(HeaderItem(0, "最新地震"), listRowAdapter))
     }
 
     private fun addHistoryRow(historyList: List<Earthquake>) {
         val listRowAdapter = ArrayObjectAdapter(cardPresenter)
-        for (quake in historyList) {
-            val card = QuakeCard(
-                quake.epicenter,
-                "${quake.magnitude}",
-                quake.shakemap_url ?: "https://你的API圖片網址.jpg"
+        historyList.forEach { quake ->
+            listRowAdapter.add(
+                QuakeCard(
+                    quake.epicenter,
+                    "${quake.magnitude}",
+                    quake.shakemap_url ?: "https://你的API圖片網址.jpg"
+                )
             )
-            listRowAdapter.add(card)
         }
+        rowsAdapter.add(ListRow(HeaderItem(1, "歷史地震"), listRowAdapter))
+    }
 
-        val header = HeaderItem(1, "歷史地震")
-        rowsAdapter.add(ListRow(header, listRowAdapter))
+    /** 停水 **/
+    private fun fetchWaterOutages() {
+        RetrofitClient.instance
+            .getWaterOutages(county = "台中市")
+            .enqueue(object : Callback<WaterOutagesResponse> {
+                override fun onResponse(
+                    call: Call<WaterOutagesResponse>,
+                    resp: Response<WaterOutagesResponse>
+                ) {
+                    if (!resp.isSuccessful) return
+                    val list: List<WaterOutage> = resp.body()?.data ?: emptyList()
+                    if (list.isEmpty()) return
+
+                    val rowAdapter = ArrayObjectAdapter(cardPresenter)
+                    list.forEach { o ->
+                        rowAdapter.add(
+                            QuakeCard(
+                                title = "停水/降壓",
+                                content = "開始: ${o.start_time} 結束: ${o.end_time}\n區域: ${o.water_outage_areas}",
+                                imageUrl = "" // 沒圖就空白
+                            )
+                        )
+                    }
+                    rowsAdapter.add(ListRow(HeaderItem(2, "停水 / 降壓"), rowAdapter))
+                }
+
+                override fun onFailure(call: Call<WaterOutagesResponse>, t: Throwable) {
+                    Log.e("WATER", "failure: ${t.message}")
+                }
+            })
     }
 
     private fun setupEventListeners() {
@@ -137,9 +171,7 @@ class MainFragment : BrowseSupportFragment() {
                     mBackgroundManager.drawable = resource
                 }
 
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    // 空即可
-                }
+                override fun onLoadCleared(placeholder: Drawable?) {}
             })
         mBackgroundTimer?.cancel()
     }

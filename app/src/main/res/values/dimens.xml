@@ -3,4 +3,24 @@
     <dimen name="card_padding">16dp</dimen>
     <dimen name="card_title_size">22sp</dimen>
     <dimen name="card_subtitle_size">18sp</dimen>
+
+    <dimen name="tv_section_gap">48dp</dimen>
+    <dimen name="tv_label_text_gap">12dp</dimen>
+    <dimen name="details_title_size">34sp</dimen>
+    <dimen name="details_body_size">22sp</dimen>
+
+
+    <!-- 三個區塊之間的固定間距（全部一致） -->
+    <dimen name="section_spacing">20dp</dimen>
+
+    <!-- 區塊標題（原因 / 影響時間 / 降壓區域）的字級 -->
+    <dimen name="section_title_size">20sp</dimen>
+
+    <!-- 區塊內容的字級 -->
+    <dimen name="section_body_size">18sp</dimen>
+
+    <!-- 內文行距，讓段落更好讀 -->
+    <dimen name="section_body_line_space">6dp</dimen>
+
+
 </resources>

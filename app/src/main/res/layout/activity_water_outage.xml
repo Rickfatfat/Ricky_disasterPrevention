@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:padding="24dp"
+    android:fillViewport="true"
+    android:descendantFocusability="afterDescendants"
+    android:clipToPadding="false"
+    android:focusable="false"
+    android:focusableInTouchMode="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- 頁面主標題（左 icon + 右文字） -->
+        <LinearLayout
+            android:id="@+id/header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:id="@+id/iv_title_icon"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:src="@drawable/wateroutage_playstore"
+                app:tint="#A0D8F2"
+                android:contentDescription="停水圖示"
+                android:layout_marginEnd="12dp"
+                android:focusable="false"
+                android:clickable="false" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="停水資訊"
+                android:textColor="#FFFFFF"
+                android:textSize="48sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+
+        <!-- 可聚焦的主要內容容器：改用 foreground 畫邊框，避免背景造成版面變動 -->
+        <LinearLayout
+            android:id="@+id/section_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+
+            android:padding="20dp"
+            android:foreground="@drawable/focus_frame_background"
+            android:foregroundGravity="fill"
+
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:clickable="true"
+            android:descendantFocusability="blocksDescendants"
+            android:nextFocusDown="@id/btn_more">
+
+            <!-- 區塊 1：原因 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:id="@+id/tv_reason_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="原因："
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/bg_section_label"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/tv_reason"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="_"
+                    android:textColor="#DADADA"
+                    android:textSize="20sp"
+                    android:lineSpacingExtra="6dp"
+                    android:breakStrategy="balanced" />
+            </LinearLayout>
+            <View
+                android:id="@+id/div_after_reason"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/hairline"
+                android:focusable="false" />
+
+            <!-- 區塊 2：影響時間 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:id="@+id/tv_time_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="影響時間："
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/bg_section_label"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="_"
+                    android:textColor="#DADADA"
+                    android:textSize="20sp"
+                    android:lineSpacingExtra="6dp"
+                    android:breakStrategy="balanced" />
+            </LinearLayout>
+            <View
+                android:id="@+id/div_after_time"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/hairline"
+                android:focusable="false" />
+
+            <!-- 區塊 3：停水區域（有資料才顯示） -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:id="@+id/label_water_area"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="停水區域："
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:background="@drawable/bg_section_label"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/tv_water_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#DADADA"
+                    android:textSize="20sp"
+                    android:lineSpacingExtra="6dp"
+                    android:breakStrategy="balanced"
+                    android:visibility="gone" />
+            </LinearLayout>
+            <View
+                android:id="@+id/div_after_water"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/hairline"
+                android:focusable="false" />
+
+            <!-- 區塊 4：降壓區域（有資料才顯示） -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="24dp">
+
+                <TextView
+                    android:id="@+id/label_pressure_area"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="降壓區域："
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:background="@drawable/bg_section_label"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/tv_pressure_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#DADADA"
+                    android:textSize="20sp"
+                    android:lineSpacingExtra="6dp"
+                    android:breakStrategy="balanced"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- 若兩組都沒有資料，顯示這個備援訊息（預設隱藏） -->
+            <TextView
+                android:id="@+id/tv_area_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="影響區域：\n未提供"
+                android:textColor="#DADADA"
+                android:textSize="20sp"
+                android:lineSpacingExtra="6dp"
+                android:breakStrategy="balanced"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- 更多公告按鈕（維持原本視覺，不加放大動畫避免版面抖動） -->
+        <Button
+            android:id="@+id/btn_more"
+            android:layout_width="120dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="44dp"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="start"
+            android:background="@drawable/btn_history_background"
+            android:text="更多公告"
+            android:textColor="@color/btn_history_text_color"
+            android:textSize="20sp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:clickable="true"
+            android:nextFocusUp="@id/section_main" />
+    </LinearLayout>
+</ScrollView>

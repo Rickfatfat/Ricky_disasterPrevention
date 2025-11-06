@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 每個區塊（原因 / 影響時間 / 降壓區域）的共同外框樣式，
+         只負責控制每一塊的底部間距，確保三塊間距一致 -->
+    <style name="SectionBlock">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/section_spacing</item>
+    </style>
+
+    <!-- 區塊標題字型（大一點 + 半粗） -->
+    <style name="SectionTitle">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">@dimen/section_title_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- 區塊內容字型（比標題小、顏色稍淡、行距較舒適） -->
+    <style name="SectionBody">
+        <item name="android:textColor">#DADADA</item>
+        <item name="android:textSize">@dimen/section_body_size</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:lineSpacingExtra">@dimen/section_body_line_space</item>
+        <item name="android:breakStrategy">balanced</item>
+    </style>
+
+</resources>

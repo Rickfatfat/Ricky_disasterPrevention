@@ -45,7 +45,10 @@
         <activity android:name=".LatestDetailActivity" android:exported="true" />
         <activity android:name=".WeatherDetailActivity" android:exported="false" />
         <activity android:name=".HeavyRainAlertActivity" android:exported="false" />
-
+        <activity android:name=".WaterOutageActivity" android:exported="false" />
+        <activity android:name=".WaterOutageDetailsActivity" android:exported="false" />
+        <activity android:name=".WaterOutageMoreActivity" android:exported="false" />
+        <activity android:name=".WaterOutageMoreDetailsActivity" android:exported="false" />
     </application>
 
 </manifest>

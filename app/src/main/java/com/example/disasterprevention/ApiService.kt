@@ -28,12 +28,19 @@ interface ApiService {
     // 舊架構：Callback 版本（MainFragment、MainBrowseFragment 用）
     // ==========================================================
 
-    // 取得地震資料（Callback）
+    // 取得地震資料
     @GET("api/v1/earthquake/")
     fun getEarthquakesLegacy(
         @Query("limit") limit: Int = 5
     ): Call<EarthquakeResponse>
 
-    @GET("api/v1/heavy_rain/") // <-- 使用你提供的正確端點
+    @GET("api/v1/heavy_rain/")
     fun getHeavyRainAlerts(): Call<Heavy_Rain_Response>
+
+
+    // 取得停水資訊
+    @GET("api/v1/")
+    fun getWaterOutages(
+        @Query("county") county: String?
+    ): Call<WaterOutagesResponse>
 }

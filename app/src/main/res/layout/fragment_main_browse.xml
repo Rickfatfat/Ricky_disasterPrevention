@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,6 +8,7 @@
     android:background="@color/tv_background_black"
     tools:context=".MainBrowseFragment">
 
+    <!-- 標題：最新地震 -->
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="187dp"
@@ -19,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- 🔹 新增一個可聚焦的容器 -->
+    <!-- 最新地震內容容器 -->
     <FrameLayout
         android:id="@+id/container_latest"
         android:layout_width="match_parent"
@@ -58,6 +60,7 @@
         </LinearLayout>
     </FrameLayout>
 
+    <!-- 歷史資料按鈕 -->
     <Button
         android:id="@+id/btn_history"
         android:layout_width="129dp"
@@ -75,7 +78,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/container_latest" />
 
+    <!--  預留停水 RecyclerView（不顯示，僅避免紅字） -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_water"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone" />
 
-    <androidx.constraintlayout.widget.Guideline android:layout_width="wrap_content"
+    <!-- Guideline (可忽略) -->
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
