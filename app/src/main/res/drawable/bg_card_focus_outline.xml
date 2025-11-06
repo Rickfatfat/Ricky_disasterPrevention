@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 外層柔光暈 -->
-    <item>
+
+    <!-- 外層邊框 -->
+    <item
+        android:left="0dp"
+        android:top="11dp"
+        android:right="0dp"
+        android:bottom="11dp">
         <shape android:shape="rectangle">
             <solid android:color="@android:color/transparent" />
-            <corners android:radius="22dp" />
+            <corners android:radius="24dp" />
             <stroke
-                android:width="6dp"
-                android:color="#66E2E0FB" /> <!-- 半透明柔光 -->
+                android:width="3.2dp"
+                android:color="#E2E0FB" /> <!-- 純紫邊框 -->
         </shape>
     </item>
 
-    <!-- 內層主邊框 -->
-    <item android:left="2dp" android:top="2dp" android:right="2dp" android:bottom="2dp">
-        <shape android:shape="rectangle">
-            <solid android:color="@android:color/transparent" />
-            <corners android:radius="20dp" />
-            <stroke
-                android:width="3dp"
-                android:color="#E2E0FB" /> <!-- 實體邊框 -->
-        </shape>
-    </item>
 </layer-list>

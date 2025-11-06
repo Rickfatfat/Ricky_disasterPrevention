@@ -10,6 +10,8 @@ import com.airbnb.lottie.LottieAnimationView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import android.view.animation.AnimationUtils
+
 
 class CardAdapter(private val cardItems: List<CardItem>) :
     RecyclerView.Adapter<CardAdapter.ViewHolder>() {
@@ -79,12 +81,18 @@ class CardAdapter(private val cardItems: List<CardItem>) :
                     holder.cardView.context,
                     R.drawable.bg_card_focus_outline
                 )
-                holder.frame.invalidate() // ⬅️ 立即刷新，確保顯示
+                holder.frame.invalidate() //  立即刷新，確保顯示
+                holder.frame.isSelected = true
+                val animIn = AnimationUtils.loadAnimation(holder.cardView.context, R.anim.card_focus_in)
+                holder.cardView.startAnimation(animIn)
             } else {
                 holder.cardView.animate().scaleX(1f).scaleY(1f).setDuration(150).start()
                 holder.cardView.cardElevation = 6f
                 holder.frame.foreground = null
-                holder.frame.invalidate() // ⬅️ 清除後刷新
+                holder.frame.invalidate() //  清除後刷新
+                holder.frame.isSelected = false
+                val animOut = AnimationUtils.loadAnimation(holder.cardView.context, R.anim.card_focus_out)
+                holder.cardView.startAnimation(animOut)
             }
         }
     }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 聚焦時顯示紫框 -->
+    <item android:state_focused="true"
+        android:drawable="@drawable/bg_card_focus_outline" />
+
+    <!-- 預設透明 -->
+    <item android:drawable="@android:color/transparent" />
+</selector>
