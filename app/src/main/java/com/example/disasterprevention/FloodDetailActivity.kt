@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -68,13 +69,16 @@ class FloodDetailActivity : AppCompatActivity() {
 class FloodStationAdapter(private val items: List<FloodStation>) :
     RecyclerView.Adapter<FloodStationAdapter.ViewHolder>() {
 
+    // 【關鍵修正】ViewHolder 只需持有 item_flood_station.xml 內部元件的引用
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val stationName: TextView = view.findViewById(R.id.item_tv_station_name)
         val alertStatus: TextView = view.findViewById(R.id.item_tv_alert_status)
+        val statusCard: CardView = view.findViewById(R.id.item_tv_alert_status_card) // 添加 statusCard 的引用
         val currentLevel: TextView = view.findViewById(R.id.item_tv_current_level)
         val yellowLevel: TextView = view.findViewById(R.id.item_tv_yellow_level)
         val redLevel: TextView = view.findViewById(R.id.item_tv_red_level)
         val stationImage: ImageView = view.findViewById(R.id.item_iv_station_image)
+        // 【已刪除】val viewPager: ViewPager2 = view.findViewById(R.id.view_pager_flood)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -92,21 +96,34 @@ class FloodStationAdapter(private val items: List<FloodStation>) :
         )
         holder.stationName.text = item.stationName
         holder.alertStatus.text = "狀態：${item.alertStatus}"
-        holder.currentLevel.text = "目前水位：${item.currentLevel} m"
+        holder.currentLevel.text = "${item.currentLevel} m" // 確保只設定數值
         holder.yellowLevel.text = "二級警戒：${item.yellowLevel} m"
         holder.redLevel.text = "一級警戒：${item.redLevel} m"
 
+        // 根據狀態改變文字和卡片背景顏色
         when (item.alertStatus) {
-            "正常" -> holder.alertStatus.setTextColor(Color.parseColor("#4CAF50")) // 綠色
-            "注意" -> holder.alertStatus.setTextColor(Color.parseColor("#FFC107")) // 黃色
-            "警戒" -> holder.alertStatus.setTextColor(Color.parseColor("#F44336")) // 紅色
-            else -> holder.alertStatus.setTextColor(Color.BLACK)
+            "正常" -> {
+                holder.alertStatus.setTextColor(Color.parseColor("#4CAF50"))
+                holder.statusCard.setCardBackgroundColor(Color.parseColor("#33FFFFFF"))
+            }
+            "注意" -> {
+                holder.alertStatus.setTextColor(Color.parseColor("#FFC107"))
+                holder.statusCard.setCardBackgroundColor(Color.parseColor("#33FFFFFF"))
+            }
+            "警戒" -> {
+                holder.alertStatus.setTextColor(Color.parseColor("#F44336"))
+                holder.statusCard.setCardBackgroundColor(Color.parseColor("#33FFFFFF"))
+            }
+            else -> {
+                holder.alertStatus.setTextColor(Color.WHITE)
+                holder.statusCard.setCardBackgroundColor(Color.parseColor("#424242"))
+            }
         }
 
         Glide.with(holder.itemView.context)
             .load(item.imageUrl)
-            .placeholder(R.drawable.bg_card_normal)
-            .error(R.drawable.cloud)
+            .placeholder(R.drawable.bg_card_normal) // 建議可以換成一個深色的 placeholder
+            .error(R.drawable.cloud) // 建議可以換成一個深色背景的錯誤圖示
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
@@ -126,9 +143,10 @@ class FloodStationAdapter(private val items: List<FloodStation>) :
                     isFirstResource: Boolean
                 ): Boolean {
                     return false
-                } // 【修正】已將此處多餘的 'a' 刪除
+                }
             })
             .into(holder.stationImage)
     }
     override fun getItemCount() = items.size
 }
+

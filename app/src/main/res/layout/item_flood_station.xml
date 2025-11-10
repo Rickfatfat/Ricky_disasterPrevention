@@ -5,86 +5,163 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@drawable/bg_card_normal">
+    android:background="@drawable/bg_flood_gradient"
+    android:padding="32dp">
 
-    <!-- 最上面一行：測站名稱 -->
+    <!-- 標題：測站名稱 -->
     <TextView
         android:id="@+id/item_tv_station_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="測站名稱"
-        android:textColor="@android:color/black"
-        android:textSize="48sp"
+        tools:text="石岡壩測站"
+        android:textColor="@android:color/white"
+        android:textSize="42sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/item_tv_alert_status"
-        android:layout_marginEnd="8dp"/>
+        app:layout_constraintEnd_toStartOf="@+id/item_tv_alert_status_card"
+        android:layout_marginEnd="24dp"/>
 
-    <!-- 最上面一行：狀態 -->
-    <TextView
-        android:id="@+id/item_tv_alert_status"
+    <!-- 右上角：狀態卡片 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_tv_alert_status_card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="狀態：正常"
-        android:textSize="48sp"
-        android:textStyle="bold"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="#33FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBaseline_toBaselineOf="@id/item_tv_station_name" />
+        app:layout_constraintBaseline_toBaselineOf="@id/item_tv_station_name">
 
-    <!-- 右邊：圖片 -->
+        <TextView
+            android:id="@+id/item_tv_alert_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="狀態：正常"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="8dp"
+            tools:textColor="#4CAF50"/>
+    </androidx.cardview.widget.CardView>
 
-    <!-- 左邊：目前水位 -->
 
-    <!-- 左邊：二級警戒 -->
-
-    <!-- 左邊：一級警戒 -->
-
-    <ImageView
-        android:id="@+id/item_iv_station_image"
-        android:layout_width="500dp"
-        android:layout_height="326dp"
+    <!-- 左側：數據儀表板 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/data_panel"
+        android:layout_width="400dp"
+        android:layout_height="0dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:background="#e0e0e0"
-        android:contentDescription="測站即時影像"
-        android:scaleType="centerCrop"
+        app:cardBackgroundColor="#1AFFFFFF"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_tv_station_name"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:padding="24dp">
+
+            <!-- 【第一處修正】目前水位 標題 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="目前水位"
+                android:textColor="@android:color/white"
+                android:textSize="40sp"
+                android:textStyle="bold"/>
+
+            <!-- 【第二處修正】實際高度值，並與標題產生間距 -->
+            <TextView
+                android:id="@+id/item_tv_current_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="1.25 m"
+                android:textColor="@android:color/white"
+                android:textSize="48sp"
+                android:textStyle="bold"
+                android:layout_marginTop="6dp"
+                android:layout_marginStart="4dp"
+                />
+
+            <!-- 分隔線 -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#40FFFFFF"
+                android:layout_marginVertical="24dp" />
+
+            <!-- 警戒水位標題 -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="警戒水位標準"
+                android:textColor="#B0BEC5"
+                android:textSize="20sp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- 二級警戒 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <View android:layout_width="16dp" android:layout_height="16dp" android:background="#FFC107" />
+                <TextView
+                    android:id="@+id/item_tv_yellow_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="二級警戒：1.8 m"
+                    android:textColor="#E0E0E0"
+                    android:textSize="22sp"
+                    android:layout_marginStart="12dp" />
+            </LinearLayout>
+
+            <!-- 一級警戒 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="16dp">
+                <View android:layout_width="16dp" android:layout_height="16dp" android:background="#F44336" />
+                <TextView
+                    android:id="@+id/item_tv_red_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="一級警戒：2.4 m"
+                    android:textColor="#E0E0E0"
+                    android:textSize="22sp"
+                    android:layout_marginStart="12dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+    <!-- 右側：即時影像 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/image_panel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp"
+        android:layout_marginStart="32dp"
+        app:layout_constraintStart_toEndOf="@id/data_panel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_tv_station_name" />
+        app:layout_constraintTop_toTopOf="@id/data_panel"
+        app:layout_constraintBottom_toBottomOf="@id/data_panel">
 
-    <TextView
-        android:id="@+id/item_tv_current_level"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="44dp"
-        android:text="目前水位：0.0 m"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/item_iv_station_image" />
-
-    <TextView
-        android:id="@+id/item_tv_yellow_level"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="44dp"
-        android:text="二級警戒：1.8 m"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_tv_current_level" />
-
-    <TextView
-        android:id="@+id/item_tv_red_level"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="40dp"
-        android:text="一級警戒：2.4 m"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_tv_yellow_level" />
+        <ImageView
+            android:id="@+id/item_iv_station_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:contentDescription="測站即時影像"
+            android:scaleType="centerCrop"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
