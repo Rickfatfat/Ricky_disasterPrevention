@@ -153,19 +153,27 @@ class HomeActivity : AppCompatActivity() {
             .enqueue(object : Callback<Heavy_Rain_Response> {
                 override fun onResponse(call: Call<Heavy_Rain_Response>, response: Response<Heavy_Rain_Response>) {
                     val latest = response.body()?.data?.firstOrNull()
+
                     var cardTitle = "豪雨特報"
                     var cardSubtitle = "目前沒有豪大雨特報"
-                    var alertStatus = 0
+
+                    // 無特報預設顏色：深藍色
+                    var backgroundColor = Color.parseColor("#4682B4")
 
                     if (latest != null) {
                         val headline = latest.headline
+
+                        // 豪雨特報（發布）
                         if (headline.contains("特報") && !headline.contains("解除")) {
-                            alertStatus = 1
-                            val expiresTime = latest.expiresTime.split("T").getOrNull(1)?.substring(0, 5) ?: ""
+                            backgroundColor = Color.parseColor("#C62828")
+                            val expiresTime = latest.expiresTime.split("T")
+                                .getOrNull(1)?.substring(0, 5) ?: ""
                             cardTitle = headline
                             cardSubtitle = "即將到來\n預計時間：$expiresTime"
+
+                            // 豪雨特報（解除）
                         } else if (headline.contains("解除")) {
-                            alertStatus = 2
+                            backgroundColor = Color.parseColor("#4CAF50")
                             cardSubtitle = headline
                         }
                     }
@@ -173,31 +181,34 @@ class HomeActivity : AppCompatActivity() {
                     val item = CardItem(
                         title = cardTitle,
                         subtitle = cardSubtitle,
-                        backgroundColor = Color.parseColor("#4682B4"),
+                        backgroundColor = backgroundColor,
                         titleColor = Color.WHITE,
                         subtitleColor = Color.WHITE,
                         iconResId = R.drawable.heavyrain,
                         onClick = {
                             val intent = Intent(this@HomeActivity, HeavyRainAlertActivity::class.java)
-                            if (alertStatus > 0 && latest != null)
+                            if (latest != null)
                                 intent.putExtra("heavy_rain_alert_data", latest)
                             startActivity(intent)
                             overridePendingTransition(R.anim.slide_in_right, R.anim.fade_out)
                         }
                     )
+
                     cardItems.add(item)
                     adapter.notifyItemInserted(cardItems.size - 1)
                 }
 
                 override fun onFailure(call: Call<Heavy_Rain_Response>, t: Throwable) {
-                    cardItems.add(CardItem(
-                        title = "豪雨特報",
-                        subtitle = "資料取得失敗",
-                        backgroundColor = Color.parseColor("#4682B4"),
-                        titleColor = Color.WHITE,
-                        subtitleColor = Color.WHITE,
-                        iconResId = R.drawable.heavyrain
-                    ))
+                    cardItems.add(
+                        CardItem(
+                            title = "豪雨特報",
+                            subtitle = "資料取得失敗",
+                            backgroundColor = Color.parseColor("#4682B4"), // 藍色維持
+                            titleColor = Color.WHITE,
+                            subtitleColor = Color.WHITE,
+                            iconResId = R.drawable.heavyrain
+                        )
+                    )
                     adapter.notifyItemInserted(cardItems.size - 1)
                 }
             })

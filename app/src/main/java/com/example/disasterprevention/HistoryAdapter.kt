@@ -80,7 +80,6 @@ class HistoryAdapter(private val historyList: List<Earthquake>) :
             intent.putExtra("SHAKEMAP_URL", item.shakemap_url)
             context.startActivity(intent)
             Log.d("HistoryAdapter", "傳遞資料: ${item.time}, ${item.epicenter}, ${item.magnitude}, ${item.taichung_intensity}, ${item.shakemap_url}")
-
         }
 
     }
