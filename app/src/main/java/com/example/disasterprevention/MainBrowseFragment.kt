@@ -25,6 +25,8 @@ import retrofit2.Response
 @Deprecated("此類已由 HomeActivity 取代，不再使用。")
 class MainBrowseFragment : Fragment() {
 
+    private lateinit var waterAdapter: WaterOutageAdapter
+    private val waterList = mutableListOf<WaterOutage>()
     private lateinit var tvLatestInfo: TextView
     private lateinit var ivLatestImage: ImageView
     private lateinit var btnHistory: Button

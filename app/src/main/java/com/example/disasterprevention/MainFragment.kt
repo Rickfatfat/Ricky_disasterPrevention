@@ -18,8 +18,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import androidx.leanback.widget.HeaderItem
+import androidx.leanback.widget.ListRow
 
 class MainFragment : BrowseSupportFragment() {
+
 
     private val mHandler = Handler(Looper.getMainLooper())
     private lateinit var mBackgroundManager: BackgroundManager
@@ -140,6 +143,7 @@ class MainFragment : BrowseSupportFragment() {
             })
     }
 
+
     private fun setupEventListeners() {
         onItemViewClickedListener = OnItemViewClickedListener { _, item, _, _ ->
             if (item is QuakeCard) {
@@ -187,6 +191,48 @@ class MainFragment : BrowseSupportFragment() {
             mHandler.post { updateBackground(mBackgroundUri) }
         }
     }
+    // MainFragment.kt 內（class MainFragment : BrowseSupportFragment() { ... } 裡）
+
+
+
+    private fun fetchWaterOutages() {
+        // 你目前使用的單例已是 RetrofitClient
+        RetrofitClient.instance
+            .getWaterOutages(county = "台中市")
+            .enqueue(object : Callback<WaterOutagesResponse> {
+                override fun onResponse(
+                    call: Call<WaterOutagesResponse>,
+                    resp: Response<WaterOutagesResponse>
+                ) {
+                    Log.d("WATER", "URL=${resp.raw().request.url} code=${resp.code()}")
+
+                    if (!resp.isSuccessful) return
+
+                    // ★ 正確：從 items 取資料，並指定型別讓 o 被推成 WaterOutage
+                    val list: List<WaterOutage> = resp.body()?.data ?: emptyList()
+                    if (list.isEmpty()) return
+
+                    val rowAdapter = ArrayObjectAdapter(cardPresenter)
+                    list.forEach { o ->
+                        rowAdapter.add(
+                            QuakeCard(
+                                title = "停水/降壓",
+                                content = "開始:${o.start_time}  結束:${o.end_time}\n區域:${o.water_outage_areas}",
+                                imageUrl = "" // 沒圖就留空
+                            )
+                        )
+                    }
+
+                    // 建議帶一個不與前兩個重複的 id
+                    rowsAdapter.add(ListRow(HeaderItem(2, "停水 / 降壓"), rowAdapter))
+                }
+
+                override fun onFailure(call: Call<WaterOutagesResponse>, t: Throwable) {
+                    Log.e("WATER", "failure: ${t.message}")
+                }
+            })
+    }
+
 
     companion object {
         private const val TAG = "MainFragment"
